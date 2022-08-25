@@ -46,6 +46,9 @@ int i = 0;
 int in_degree[n];
 int out_degree[n];
 
+float page_ranks[n];
+float mean_coloumn_weighed[n];
+
 for(int k = 0;k<n;k++){
     in_degree[k]=0;
     out_degree[k]=0;
@@ -76,6 +79,12 @@ for(int k = 0;k<n;k++){
     printf("indegree del nodo %d e' %d\n",i,in_degree[i]);
 
   }
+
+for (int i = 0; i<n ; i++){
+    page_ranks[i]= 1.0/(float)n;
+    mean_coloumn_weighed[i] = (1-WEIGHT)/(float)n;
+
+}
 
 Node* sparse_matrix [n];
 for (int i = 0 ; i < n ;i++){
