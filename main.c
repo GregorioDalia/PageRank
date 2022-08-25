@@ -118,7 +118,7 @@ for (int i = 0 ; i < n ;i++){
 
   }
 
-
+/*
 //DEBUG
 for(int i = 0 ; i<n ;i++){
 
@@ -140,9 +140,53 @@ for(int i = 0 ; i<n ;i++){
 
 }
 
+*/
+
+float score_norm = 0;
+float old_PageRank[n];
+
+do{
+
+    for(int i =0; i<n;i++){
+        old_PageRank[i]= page_ranks[i];
+    }
+
+   for (int i = 0;i<n;i++){
+
+        for(int j = 0;j<in_degree[i];j++){
+
+        //moltiplicazione
 
 
 
+        }
+
+    //somma con colonna costante mean_coloumn_weighed
+
+
+}
+
+
+for(int i=0;i<n;i++){
+
+    old_PageRank[i] = page_ranks[i] - old_PageRank[i];
+
+    if(old_PageRank[i]<0)old_PageRank[i] = -old_PageRank[i];
+
+    score_norm += old_PageRank[i];
+
+
+}
+
+
+
+}while (score_norm > ERROR);
+
+for (int i = 0;i<n;i++){
+    printf("THE PAGE RANKE IS... \n");
+    printf("%f\n",page_ranks[i]);
+
+}
 
 
 
