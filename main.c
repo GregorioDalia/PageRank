@@ -111,11 +111,12 @@ int main(){
   }
 
   // DEBUG
-
+ /*
   for (i = 0; i < n; i++){
     printf("DEBUG: outdegree of node %d e' %d\n", i, out_degree[i]);
     printf("DEBUG: indegree of node %d e' %d\n", i, in_degree[i]);
   }
+  */
 
 printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
   for (int i = 0; i < n; i++){
@@ -130,7 +131,7 @@ printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
 
     while (pointer != NULL){
 
-      printf("DEBUG: UPDATE MATRIX\n");
+      printf("DEBUG: UPDATE MATRIX %d\n",i);
       pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
 
       pointer = pointer->next;
