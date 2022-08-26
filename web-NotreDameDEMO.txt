@@ -1,4 +1,4 @@
-# Directed graph (each unordered pair of nodes is saved once): web-NotreDame.txt 
+# Directed graph (each unordered pair of nodes is saved once): web-NotreDame.txt
 # University of Notre Dame web graph from 1999 by Albert, Jeong and Barabasi
 # Nodes: 4 Edges: 8
 # FromNodeId	ToNodeId

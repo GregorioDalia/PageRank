@@ -148,6 +148,9 @@ float score_norm ;
 int count =0;
 
 do{
+
+    printf("GIRO N: %d\n",count+1);
+
     score_norm = 0;
 
     for(int i =0; i<n;i++){
@@ -167,6 +170,9 @@ do{
         sum += page_ranks[currNode->end_node] * currNode->value;
 
         currNode =currNode->next;
+        printf("j = %d\n",j);
+        printf("max = %d\n",in_degree[i]-1);
+        j++;
 
         }while(j<in_degree[i]-1);
 
@@ -182,16 +188,23 @@ do{
 
         currNode =currNode->next;
 
-        }
-        */
-    page_ranks[i]= sum + mean_coloumn_weighed[i];
+        }*/
+
+        page_ranks[i]= sum + mean_coloumn_weighed[i];
+        printf("Valore %d aggiornato finale del peso = %f\n",i,page_ranks[i]);
+
     //somma con colonna costante mean_coloumn_weighed
 
-    old_PageRank[i] = page_ranks[i] - old_PageRank[i];
 
-    if(old_PageRank[i]<0)old_PageRank[i] = -old_PageRank[i];
+        old_PageRank[i] = page_ranks[i] - old_PageRank[i];
+        printf("differenza = %f\n",old_PageRank[i]);
 
-    score_norm += old_PageRank[i];
+
+        if(old_PageRank[i]<0)old_PageRank[i] = -old_PageRank[i];
+
+        score_norm += old_PageRank[i];
+        printf("norma alla riga %d = %f\n",i,score_norm);
+
 
 
 
@@ -208,10 +221,16 @@ for(int i=0;i<n;i++){
     score_norm += old_PageRank[i];
 
 
-}*/
+}
+*/
+
+
 count++;
+printf("check error = %f\n",score_norm);
 
 }while (score_norm > ERROR);
+
+
 printf("quanti giri? %d\n",count);
 
 for (int i = 0;i<n;i++){
