@@ -18,16 +18,15 @@ typedef struct Node
 int main(){
 
   // Open the data set
-  char filename[] = "./web-NotreDameDEMO.txt";
+  char filename[] = "./web-NotreDame.txt";
   FILE *fp;
-  int n, e;       // n: number of nodes   e: number of edges
+  int n,e;
+  // n: number of nodes   e: number of edges
 
   if ((fp = fopen(filename, "r")) == NULL){
     fprintf(stderr, "[Error] cannot open file");
     exit(1);
   }
-
-
 
   // Read the data set and get the number of nodes (n) and edges (e)
   char ch;
@@ -47,53 +46,35 @@ int main(){
   // DEBUG: Print the number of nodes and edges, skip everything else
   printf("\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
+printf("TEST1\n");
 
   // Creation of the matrix from the file and count of outdegree and indregree of all nodes
   int fromnode, tonode;
-  int file_Matrix[e][2];
-  int in_degree[n];
-  int out_degree[n];
 
-  float page_ranks[n];
-  float mean_coloumn_weighed[n];
+  printf("TESTPRE\n");
+
+  //int file_Matrix[e][2];
+  Node* file_Matrix;
+
+  printf("TESTPOST\n");
+
+  int* in_degree =malloc(n * sizeof(int));
+  int* out_degree=malloc(n * sizeof(int));
+
+  double* page_ranks=malloc(n * sizeof(double));
+  double* mean_coloumn_weighed=malloc(n * sizeof(double));
+
+  printf("TEST2\n");
 
   for (int k = 0; k < n; k++){
     in_degree[k] = 0;
     out_degree[k] = 0;
   }
 
+  printf("TEST3\n");
 
   int i = 0;
-  while (!feof(fp)){
-
-    fscanf(fp, "%d%d", &fromnode, &tonode);
-
-    // DEBUG: print fromnode and tonode
-    printf("From: %d To: %d\n", fromnode, tonode);
-
-    file_Matrix[i][0] = fromnode;
-    file_Matrix[i][1] = tonode;
-
-    // use fromnode and tonode as index
-    out_degree[fromnode]++;
-    in_degree[tonode]++;
-
-    i++;
-  }
-
-  // DEBUG
-  for (i = 0; i < n; i++){
-    printf("outdegree of node %d e' %d\n", i, out_degree[i]);
-    printf("indegree of node %d e' %d\n", i, in_degree[i]);
-  }
-
-  for (int i = 0; i < n; i++){
-    page_ranks[i] = 1.0 / (float)n;
-    mean_coloumn_weighed[i] = (1 - WEIGHT) / (float)n;
-  }
-
-
-  //Creation of the sparse matrix
+    //Creation of the sparse matrix
   Node *sparse_matrix[n];
 
   //Code Smell, can avoid?
@@ -101,16 +82,22 @@ int main(){
     sparse_matrix[i] = NULL;
   }
 
-  for (int i = 0; i < e; i++){
-    // qui dovremmo distribuire gli archi ai vari processi
-    // distribuisci dicendogli prima di quel nodo quale � l'indegree quindi sai quanto fare il ciclo
+  while (!feof(fp)){
 
+    fscanf(fp, "%d%d", &fromnode, &tonode);
+
+    // DEBUG: print fromnode and tonode
+    //printf("From: %d To: %d\n", fromnode, tonode);
+
+    //file_Matrix[i][0] = fromnode;
+    //file_Matrix[i][1] = tonode;
     Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
-    NuovoArco->start_node = file_Matrix[i][0];
-    NuovoArco->end_node = file_Matrix[i][1];
+    NuovoArco->start_node = fromnode;
+    NuovoArco->end_node = tonode;
     // printf("DEBUG OUTDEGREE %d \n",out_degree[NuovoArco->start_node]);
 
-    NuovoArco->value = (WEIGHT / (float)out_degree[NuovoArco->start_node]);
+    //NuovoArco->value = (WEIGHT / (float)out_degree[NuovoArco->start_node]);
+    NuovoArco->value = 1;
 
     // NuovoArco->value = 1;
 
@@ -120,12 +107,58 @@ int main(){
 
     sparse_matrix[NuovoArco->end_node] = NuovoArco;
 
+
+
+    // use fromnode and tonode as index
+    out_degree[fromnode]++;
+    in_degree[tonode]++;
+
+    i++;
+  }
+      printf("TEST4\n");
+
+
+  // DEBUG
+  /*
+  for (i = 0; i < n; i++){
+    printf("outdegree of node %d e' %d\n", i, out_degree[i]);
+    printf("indegree of node %d e' %d\n", i, in_degree[i]);
+  }
+  */
+
+  for (int i = 0; i < n; i++){
+    page_ranks[i] = 1.0 / (double)n;
+    mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
+  }
+      printf("TEST5\n");
+
+
+  for (int i = 0; i < n; i++){
+
+    Node *pointer = sparse_matrix[i];
+
+    while (pointer != NULL){
+
+      pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
+
+      pointer = pointer->next;
+    }
+  }
+        printf("TEST6\n");
+
+/*
+  for (int i = 0; i < e; i++){
+    // qui dovremmo distribuire gli archi ai vari processi
+    // distribuisci dicendogli prima di quel nodo quale � l'indegree quindi sai quanto fare il ciclo
+
+
     // printf("DEBUG\n");
     // printf("%d",NuovoArco->end_node);
     // printf("\n");
   }
-
+*/
   // DEBUG //////
+  /*
   printf("MATRIX:\n");
 
   for (int i = 0; i < n; i++){
@@ -142,12 +175,14 @@ int main(){
     }
     printf("\n");
   }
+  */
   /////////////
 
 
-  float old_PageRank[n];
-  float score_norm;
+  double* old_PageRank=malloc(n * sizeof(double));
+  double score_norm;
   int count = 0;
+      printf("TEST7\n");
 
   do{
     //printf("GIRO N: %d\n", count + 1);
@@ -192,8 +227,8 @@ int main(){
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
 
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE IS... \n");
-    printf("%f\n", page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS... \n",i);
+    printf("%0.15f\n", page_ranks[i]);
   }
 
   return 0;
