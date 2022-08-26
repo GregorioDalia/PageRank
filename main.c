@@ -142,31 +142,48 @@ for(int i = 0 ; i<n ;i++){
 
 */
 
-float score_norm = 0;
 float old_PageRank[n];
+float score_norm ;
+int count =0;
 
 do{
+    score_norm = 0;
 
     for(int i =0; i<n;i++){
         old_PageRank[i]= page_ranks[i];
     }
 
    for (int i = 0;i<n;i++){
+        float sum = 0.0;
 
         for(int j = 0;j<in_degree[i];j++){
+        // o in_degree o while curr node != null
 
-        //moltiplicazione
+        Node* currNode = sparse_matrix[i];
 
+        //moltiplicazione e somma
 
+        sum += page_ranks[currNode->end_node] * currNode->value;
+
+        currNode =currNode->next;
 
         }
 
+    page_ranks[i]= sum + mean_coloumn_weighed[i];
     //somma con colonna costante mean_coloumn_weighed
+
+    old_PageRank[i] = page_ranks[i] - old_PageRank[i];
+
+    if(old_PageRank[i]<0)old_PageRank[i] = -old_PageRank[i];
+
+    score_norm += old_PageRank[i];
+
 
 
 }
 
-
+// valutare se questo far si puo mettere dentro
+/*
 for(int i=0;i<n;i++){
 
     old_PageRank[i] = page_ranks[i] - old_PageRank[i];
@@ -176,11 +193,11 @@ for(int i=0;i<n;i++){
     score_norm += old_PageRank[i];
 
 
-}
-
-
+}*/
+count++;
 
 }while (score_norm > ERROR);
+printf("quanti giri? %d\n",count);
 
 for (int i = 0;i<n;i++){
     printf("THE PAGE RANKE IS... \n");
