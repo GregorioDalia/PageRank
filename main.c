@@ -74,15 +74,16 @@ int main(){
   printf("DEBUG: INITIALIZE MATRIX\n");
   for (int i = 0; i < n; i++){
     sparse_matrix[i] = NULL;
-  }
+  }    printf("\n");
+
 
   printf("DEBUG: READ FILE\n");
 
   int percento = 0;
   int m=0;
-  printf("1%% ");
   while (!feof(fp)){
-    m++;
+        m++;
+
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
     // DEBUG: print fromnode and tonode
@@ -91,10 +92,11 @@ int main(){
     //file_Matrix[i][0] = fromnode;
     //file_Matrix[i][1] = tonode;
 
-    if((m%(e/10)) == 0){
+    if(e>=100 && ((m%(e/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
     }
+
     Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
     NuovoArco->start_node = fromnode;
     NuovoArco->end_node = tonode;
@@ -130,27 +132,28 @@ int main(){
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
   percento = 0;
   m=0;
-  printf("1%% ");
   for (int i = 0; i < n; i++){
-    m++;
+         m++;
     page_ranks[i] = 1.0 / (double)n;
     mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
-        if((m%(n/10)) == 0){
+        if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
     }
 
+
   }
-printf("\n");
-printf("DEBUG: UPDATE MATRIX %d\n",i);
+
+printf("\nDEBUG: UPDATE MATRIX\n");
   percento = 0;
   m=0;
-  printf("1%% ");
   for (int i = 0; i < n; i++){
+        m++;
+
 
     Node *pointer = sparse_matrix[i];
 
-        if((m++%(n/10)) == 0){
+        if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
     }
@@ -161,7 +164,8 @@ printf("DEBUG: UPDATE MATRIX %d\n",i);
 
       pointer = pointer->next;
     }
-  }
+  }    printf("\n");
+
 
 /*
   for (int i = 0; i < e; i++){
@@ -201,7 +205,7 @@ printf("DEBUG: UPDATE MATRIX %d\n",i);
   int count = 0;
 
   do{
-    printf("DEBUG: GIRO N: %d\n", count + 1);
+    printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0;
 
     for (int i = 0; i < n; i++){
@@ -210,12 +214,11 @@ printf("DEBUG: UPDATE MATRIX %d\n",i);
 
     percento = 0;
     m=0;
-    printf("1%% ");
     for (int i = 0; i < n; i++){
-
-        if((m++%(n/10)) == 0){
+    m++;
+        if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
-        printf("%nd%% ",percento);
+        printf("%d%% ",percento);
     }
 
       float sum = 0.0;
@@ -249,8 +252,10 @@ printf("DEBUG: UPDATE MATRIX %d\n",i);
   } while (score_norm > ERROR);
     printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
+      printf("\n");
 
 
+exit(0);
 
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n",i,page_ranks[i]);
