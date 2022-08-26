@@ -19,6 +19,8 @@ int main(){
 
   // Open the data set
   char filename[] = "./web-NotreDame.txt";
+  printf("DEBUG: open the file %s",filename);
+
   FILE *fp;
   int n,e;
   // n: number of nodes   e: number of edges
@@ -44,19 +46,13 @@ int main(){
   ungetc(ch, fp);
 
   // DEBUG: Print the number of nodes and edges, skip everything else
-  printf("\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
-
-printf("TEST1\n");
+  printf("DEBUG:\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
   // Creation of the matrix from the file and count of outdegree and indregree of all nodes
   int fromnode, tonode;
 
-  printf("TESTPRE\n");
-
   //int file_Matrix[e][2];
-  Node* file_Matrix;
-
-  printf("TESTPOST\n");
+  //Node* file_Matrix;
 
   int* in_degree =malloc(n * sizeof(int));
   int* out_degree=malloc(n * sizeof(int));
@@ -64,20 +60,18 @@ printf("TEST1\n");
   double* page_ranks=malloc(n * sizeof(double));
   double* mean_coloumn_weighed=malloc(n * sizeof(double));
 
-  printf("TEST2\n");
 
   for (int k = 0; k < n; k++){
     in_degree[k] = 0;
     out_degree[k] = 0;
   }
 
-  printf("TEST3\n");
-
   int i = 0;
     //Creation of the sparse matrix
   Node *sparse_matrix[n];
 
   //Code Smell, can avoid?
+  printf("DEBUG: INITIALIZE MATRIX\n");
   for (int i = 0; i < n; i++){
     sparse_matrix[i] = NULL;
   }
@@ -87,7 +81,7 @@ printf("TEST1\n");
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
     // DEBUG: print fromnode and tonode
-    //printf("From: %d To: %d\n", fromnode, tonode);
+    printf("DEBUG: From: %d To: %d\n", fromnode, tonode);
 
     //file_Matrix[i][0] = fromnode;
     //file_Matrix[i][1] = tonode;
@@ -115,22 +109,19 @@ printf("TEST1\n");
 
     i++;
   }
-      printf("TEST4\n");
-
 
   // DEBUG
-  /*
-  for (i = 0; i < n; i++){
-    printf("outdegree of node %d e' %d\n", i, out_degree[i]);
-    printf("indegree of node %d e' %d\n", i, in_degree[i]);
-  }
-  */
 
+  for (i = 0; i < n; i++){
+    printf("DEBUG: outdegree of node %d e' %d\n", i, out_degree[i]);
+    printf("DEBUG: indegree of node %d e' %d\n", i, in_degree[i]);
+  }
+
+printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
   for (int i = 0; i < n; i++){
     page_ranks[i] = 1.0 / (double)n;
     mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
   }
-      printf("TEST5\n");
 
 
   for (int i = 0; i < n; i++){
@@ -139,12 +130,12 @@ printf("TEST1\n");
 
     while (pointer != NULL){
 
+      printf("DEBUG: UPDATE MATRIX\n");
       pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
 
       pointer = pointer->next;
     }
   }
-        printf("TEST6\n");
 
 /*
   for (int i = 0; i < e; i++){
@@ -182,10 +173,9 @@ printf("TEST1\n");
   double* old_PageRank=malloc(n * sizeof(double));
   double score_norm;
   int count = 0;
-      printf("TEST7\n");
 
   do{
-    //printf("GIRO N: %d\n", count + 1);
+    printf("DEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0;
 
     for (int i = 0; i < n; i++){
@@ -227,8 +217,7 @@ printf("TEST1\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
 
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE OF NODE %d IS... \n",i);
-    printf("%0.15f\n", page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n",i,page_ranks[i]);
   }
 
   return 0;
