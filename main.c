@@ -19,8 +19,8 @@ int main(){
 
   // Open the data set
   char filename[] = "./web-NotreDameDEMO.txt";
-  FILE *fp;       
-  int n, e;       // n: number of nodes   e: number of edges 
+  FILE *fp;
+  int n, e;       // n: number of nodes   e: number of edges
 
   if ((fp = fopen(filename, "r")) == NULL){
     fprintf(stderr, "[Error] cannot open file");
@@ -29,7 +29,7 @@ int main(){
 
 
 
-  // Read the data set and get the number of nodes (n) and edges (e)  
+  // Read the data set and get the number of nodes (n) and edges (e)
   char ch;
   char str[100];
   ch = getc(fp);
@@ -96,6 +96,7 @@ int main(){
   //Creation of the sparse matrix
   Node *sparse_matrix[n];
 
+  //Code Smell, can avoid?
   for (int i = 0; i < n; i++){
     sparse_matrix[i] = NULL;
   }
