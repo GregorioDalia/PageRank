@@ -111,19 +111,20 @@ for (int i = 0 ; i < n ;i++){
 
     sparse_matrix[NuovoArco->end_node] = NuovoArco;
 
-    printf("DEBUG\n");
-    printf("%d",NuovoArco->end_node);
-    printf("\n");
+    //printf("DEBUG\n");
+    //printf("%d",NuovoArco->end_node);
+    //printf("\n");
 
 
   }
 
-/*
+
 //DEBUG
+printf("MATRICE FINALE:\n");
+
 for(int i = 0 ; i<n ;i++){
 
     Node* pointer=sparse_matrix[i];
-
     printf("Riga %d ",i);
 
     while(pointer != NULL){
@@ -140,7 +141,7 @@ for(int i = 0 ; i<n ;i++){
 
 }
 
-*/
+
 
 float old_PageRank[n];
 float score_norm ;
@@ -155,20 +156,34 @@ do{
 
    for (int i = 0;i<n;i++){
         float sum = 0.0;
+        Node* currNode = sparse_matrix[i];
 
+
+
+        int j = 0;
+        do{
+        printf("DEBUG: moltiplico con questo indice %d i numeri %f per %f\n",currNode->end_node,page_ranks[currNode->end_node],currNode->value);
+
+        sum += page_ranks[currNode->end_node] * currNode->value;
+
+        currNode =currNode->next;
+
+        }while(j<in_degree[i]-1);
+
+        /*
         for(int j = 0;j<in_degree[i];j++){
         // o in_degree o while curr node != null
 
-        Node* currNode = sparse_matrix[i];
 
         //moltiplicazione e somma
+        printf("DEBUG: moltiplico con questo indice %d i numeri %f per %f\n",currNode->end_node,page_ranks[currNode->end_node],currNode->value);
 
         sum += page_ranks[currNode->end_node] * currNode->value;
 
         currNode =currNode->next;
 
         }
-
+        */
     page_ranks[i]= sum + mean_coloumn_weighed[i];
     //somma con colonna costante mean_coloumn_weighed
 
