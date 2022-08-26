@@ -130,7 +130,7 @@ for(int i = 0 ; i<n ;i++){
     while(pointer != NULL){
 
 
-        printf("%f",pointer->value);
+        printf("%d - %d / %f",pointer->end_node,pointer->start_node,pointer->value);
         printf(" ");
 
         pointer=pointer->next;
@@ -166,15 +166,20 @@ do{
         int j = 0;
         do{
         printf("DEBUG: moltiplico con questo indice %d i numeri %f per %f\n",currNode->end_node,page_ranks[currNode->end_node],currNode->value);
+        printf("sum ora = %f\n",sum);
 
-        sum += page_ranks[currNode->end_node] * currNode->value;
+
+        sum += (page_ranks[currNode->start_node] * currNode->value);
+
+        printf("sum dopo = %f\n",sum);
 
         currNode =currNode->next;
+
         printf("j = %d\n",j);
         printf("max = %d\n",in_degree[i]-1);
         j++;
 
-        }while(j<in_degree[i]-1);
+        }while(j<in_degree[i]);
 
         /*
         for(int j = 0;j<in_degree[i];j++){
