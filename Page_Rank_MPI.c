@@ -74,17 +74,29 @@ int main(){
   printf("DEBUG: INITIALIZE MATRIX\n");
   for (int i = 0; i < n; i++){
     sparse_matrix[i] = NULL;
-  }
+  }    printf("\n");
 
+
+  printf("DEBUG: READ FILE\n");
+
+  int percento = 0;
+  int m=0;
   while (!feof(fp)){
+        m++;
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
     // DEBUG: print fromnode and tonode
-    printf("DEBUG: From: %d To: %d\n", fromnode, tonode);
+    //printf("DEBUG: From: %d To: %d\n", fromnode, tonode);
 
     //file_Matrix[i][0] = fromnode;
     //file_Matrix[i][1] = tonode;
+
+    if(e>=100 && ((m%(e/10)) == 0)){
+        percento +=10;
+        printf("%d%% ",percento);
+    }
+
     Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
     NuovoArco->start_node = fromnode;
     NuovoArco->end_node = tonode;
@@ -109,34 +121,51 @@ int main(){
 
     i++;
   }
-
-  // DEBUG
+    printf("\n");
+    // DEBUG
  /*
   for (i = 0; i < n; i++){
     printf("DEBUG: outdegree of node %d e' %d\n", i, out_degree[i]);
     printf("DEBUG: indegree of node %d e' %d\n", i, in_degree[i]);
   }
   */
-
-printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
+  printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
+  percento = 0;
+  m=0;
   for (int i = 0; i < n; i++){
+         m++;
     page_ranks[i] = 1.0 / (double)n;
     mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
+        if(n>=100 && ((m%(n/10)) == 0)){
+        percento +=10;
+        printf("%d%% ",percento);
+    }
+
+
   }
 
-
+printf("\nDEBUG: UPDATE MATRIX\n");
+  percento = 0;
+  m=0;
   for (int i = 0; i < n; i++){
+        m++;
+
 
     Node *pointer = sparse_matrix[i];
 
+        if(n>=100 && ((m%(n/10)) == 0)){
+        percento +=10;
+        printf("%d%% ",percento);
+    }
+
     while (pointer != NULL){
 
-      printf("DEBUG: UPDATE MATRIX %d\n",i);
       pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
 
       pointer = pointer->next;
     }
-  }
+  }    printf("\n");
+
 
 /*
   for (int i = 0; i < e; i++){
@@ -176,14 +205,21 @@ printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
   int count = 0;
 
   do{
-    printf("DEBUG: GIRO N: %d\n", count + 1);
+    printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0;
 
     for (int i = 0; i < n; i++){
       old_PageRank[i] = page_ranks[i];
     }
 
+    percento = 0;
+    m=0;
     for (int i = 0; i < n; i++){
+    m++;
+        if(n>=100 && ((m%(n/10)) == 0)){
+        percento +=10;
+        printf("%d%% ",percento);
+    }
 
       float sum = 0.0;
       Node *currNode = sparse_matrix[i];
@@ -214,8 +250,12 @@ printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N");
     count++;
 
   } while (score_norm > ERROR);
-
+    printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
+      printf("\n");
+
+
+exit(0);
 
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n",i,page_ranks[i]);
