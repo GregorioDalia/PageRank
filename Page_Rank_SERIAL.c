@@ -15,6 +15,8 @@ typedef struct Node
 #define WEIGHT 0.85  // Real in (0, 1), best at 0.85
 #define ERROR 0.0001 // Real in (0, +inf), best at 0.0001
 
+//all code in main to useless overhead
+
 int main(){
 
   // Open the data set
