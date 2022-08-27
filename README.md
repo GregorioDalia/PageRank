@@ -3,8 +3,8 @@ PAGE RANK ALGORITM
 Core assumpition: 
 
   -In order to save space  we have a sparse matrix saved as array of pointer to a list.
-  -We use this huge model of web \n
-   https://snap.stanford.edu/data/web-NotreDame.html\n
+  -We use this huge model of web 
+   https://snap.stanford.edu/data/web-NotreDame.html
    and so we have implemented a specific way to read this file
   
   
