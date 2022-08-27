@@ -19,8 +19,7 @@ int main(){
 
   // Open the data set
   char filename[] = "./web-NotreDame.txt";
-  printf("DEBUG: open the file %s",filename);
-
+  printf("DEBUG: open the file %s\n\n",filename);
   FILE *fp;
   int n,e;
   // n: number of nodes   e: number of edges
