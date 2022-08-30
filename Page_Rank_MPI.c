@@ -52,30 +52,22 @@ int main(){
   // Creation of the matrix from the file and count of outdegree and indregree of all nodes
   int fromnode, tonode;
 
-  //int file_Matrix[e][2];
-  //Node* file_Matrix;
-
   int* in_degree = malloc(n * sizeof(int));
   int* out_degree = malloc(n * sizeof(int));
 
-  double* page_ranks=malloc(n * sizeof(double));
-  double* old_PageRank=malloc(n * sizeof(double));
-  double* mean_coloumn_weighed=malloc(n * sizeof(double));
-
-
-  for (int k = 0; k < n; k++){
-    in_degree[k] = 0;
-    out_degree[k] = 0;
-  }
+  float* page_ranks = malloc(n * sizeof(float));
+  float* old_page_ranks = malloc(n * sizeof(float));
+  float* mean_coloumn_weighed = malloc(n * sizeof(float));
 
   //Creation of the sparse matrix
   Node *sparse_matrix[n];
 
-  //Code Smell, can avoid?
-  printf("DEBUG: INITIALIZE MATRIX\n");
-  for (int i = 0; i < n; i++){
-    sparse_matrix[i] = NULL;
-  }    
+  printf("DEBUG: INITIALIZATION\n");
+  for (int k = 0; k < n; k++){
+    in_degree[k] = 0;
+    out_degree[k] = 0;
+    sparse_matrix[k] = NULL;
+  }
 
 
   printf("\n");
@@ -90,12 +82,6 @@ int main(){
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
-    // DEBUG: print fromnode and tonode
-    //printf("DEBUG: From: %d To: %d\n", fromnode, tonode);
-
-    //file_Matrix[i][0] = fromnode;
-    //file_Matrix[i][1] = tonode;
-
     if(e>=100 && ((m%(e/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
@@ -104,12 +90,7 @@ int main(){
     Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
     NuovoArco->start_node = fromnode;
     NuovoArco->end_node = tonode;
-    // printf("DEBUG OUTDEGREE %d \n",out_degree[NuovoArco->start_node]);
-
-    //NuovoArco->value = (WEIGHT / (float)out_degree[NuovoArco->start_node]);
     NuovoArco->value = 1;
-
-    // NuovoArco->value = 1;
 
 
     // INSERIMENTO IN TESTA
@@ -123,14 +104,6 @@ int main(){
   }
   printf("\n");
 
-    // DEBUG
- /*
-  for (i = 0; i < n; i++){
-    printf("DEBUG: outdegree of node %d e' %d\n", i, out_degree[i]);
-    printf("DEBUG: indegree of node %d e' %d\n", i, in_degree[i]);
-  }
-  */
-
 
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
   
@@ -139,9 +112,9 @@ int main(){
   for (int i = 0; i < n; i++){
     
     m++;
-    page_ranks[i] = 1.0 / (double)n;
-    old_PageRank[i] = 1.0 / (double)n;
-    mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
+    page_ranks[i] = 1.0 / (float)n;
+    old_page_ranks[i] = 1.0 / (float)n;
+    mean_coloumn_weighed[i] = (1 - WEIGHT) / (float)n;
 
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
@@ -150,8 +123,6 @@ int main(){
 
   }
 
-
-  // PERCHÈ QUESTA FASE È FATTA QUI E NON DIRETTAMENTE DURANTE LA CREAZIONE??
   printf("\nDEBUG: UPDATE MATRIX\n");
   
   percento = 0;
@@ -170,7 +141,7 @@ int main(){
 
     // Update the value of the pointer
     while (pointer != NULL){  
-      pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
+      pointer->value = (WEIGHT / (float)out_degree[pointer->start_node]);
       pointer = pointer->next;
     }
 
@@ -179,49 +150,12 @@ int main(){
   printf("\n");
 
 
-/*
-  for (int i = 0; i < e; i++){
-    // qui dovremmo distribuire gli archi ai vari processi
-    // distribuisci dicendogli prima di quel nodo quale � l'indegree quindi sai quanto fare il ciclo
-
-
-    // printf("DEBUG\n");
-    // printf("%d",NuovoArco->end_node);
-    // printf("\n");
-  }
-*/
-  // DEBUG //////
-  /*
-  printf("MATRIX:\n");
-
-  for (int i = 0; i < n; i++){
-
-    Node *pointer = sparse_matrix[i];
-    printf("ROW %d ", i);
-
-    while (pointer != NULL){
-
-      printf("%d / %f",pointer->start_node, pointer->value);
-      printf(" ");
-
-      pointer = pointer->next;
-    }
-    printf("\n");
-  }
-  */
-  /////////////
-
-  double score_norm;
+  float score_norm;
   int count = 0;
 
   do{
     printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0;
-
-    //questo potrebbe essere fatto alla fine di ogni calcolo
-    //for (int i = 0; i < n; i++){
-    //  old_PageRank[i] = page_ranks[i];
-    //}
 
     percento = 0;
     m=0;
@@ -251,16 +185,16 @@ int main(){
       // somma con colonna costante mean_coloumn_weighed
       page_ranks[i] = sum + mean_coloumn_weighed[i];
 
-      // take the absolute value of the error 
-      old_PageRank[i] = page_ranks[i] - old_PageRank[i];
-      if (old_PageRank[i] < 0)
-        old_PageRank[i] = -old_PageRank[i];
+      // take the absolute value of the error, using old_page_rank avoiding to create a new variable 
+      old_page_ranks[i] = page_ranks[i] - old_page_ranks[i];
+      if (old_page_ranks[i] < 0)
+        old_page_ranks[i] = -old_page_ranks[i];
 
       // sum to the score_norm
-      score_norm += old_PageRank[i];
+      score_norm += old_page_ranks[i];
 
       // reinitialize the old_pagerank value to the current pagerank
-      old_PageRank[i] = page_ranks[i];
+      old_page_ranks[i] = page_ranks[i];
     }
 
     count++;
@@ -272,10 +206,8 @@ int main(){
   printf("\n");
 
 
-//exit(0);
-
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n",i,page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , page_ranks[i]);
   }
 
   return 0;
