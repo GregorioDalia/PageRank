@@ -15,13 +15,13 @@ typedef struct Node
 #define WEIGHT 0.85  // Real in (0, 1), best at 0.85
 #define ERROR 0.0001 // Real in (0, +inf), best at 0.0001
 
-//all code in main to useless overhead
-
 int main(){
 
   // Open the data set
-  char filename[] = "./web-NotreDame.txt";
-  printf("DEBUG: open the file %s\n\n",filename);
+  //char filename[] = "./web-NotreDame.txt";
+  char filename[] = "./DEMO.txt";
+  printf("DEBUG: open the file %s",filename);
+
   FILE *fp;
   int n,e;
   // n: number of nodes   e: number of edges
@@ -55,10 +55,11 @@ int main(){
   //int file_Matrix[e][2];
   //Node* file_Matrix;
 
-  int* in_degree =malloc(n * sizeof(int));
-  int* out_degree=malloc(n * sizeof(int));
+  int* in_degree = malloc(n * sizeof(int));
+  int* out_degree = malloc(n * sizeof(int));
 
   double* page_ranks=malloc(n * sizeof(double));
+  double* old_PageRank=malloc(n * sizeof(double));
   double* mean_coloumn_weighed=malloc(n * sizeof(double));
 
 
@@ -67,23 +68,25 @@ int main(){
     out_degree[k] = 0;
   }
 
-  int i = 0;
-    //Creation of the sparse matrix
+  //Creation of the sparse matrix
   Node *sparse_matrix[n];
 
   //Code Smell, can avoid?
   printf("DEBUG: INITIALIZE MATRIX\n");
   for (int i = 0; i < n; i++){
     sparse_matrix[i] = NULL;
-  }    printf("\n");
+  }    
 
 
+  printf("\n");
   printf("DEBUG: READ FILE\n");
 
   int percento = 0;
-  int m=0;
+  int m = 0;
+
   while (!feof(fp)){
-        m++;
+    
+    m++;
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
@@ -108,21 +111,18 @@ int main(){
 
     // NuovoArco->value = 1;
 
+
     // INSERIMENTO IN TESTA
-
     NuovoArco->next = sparse_matrix[NuovoArco->end_node];
-
     sparse_matrix[NuovoArco->end_node] = NuovoArco;
-
-
 
     // use fromnode and tonode as index
     out_degree[fromnode]++;
     in_degree[tonode]++;
 
-    i++;
   }
-    printf("\n");
+  printf("\n");
+
     // DEBUG
  /*
   for (i = 0; i < n; i++){
@@ -130,42 +130,53 @@ int main(){
     printf("DEBUG: indegree of node %d e' %d\n", i, in_degree[i]);
   }
   */
+
+
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
+  
   percento = 0;
   m=0;
   for (int i = 0; i < n; i++){
-         m++;
+    
+    m++;
     page_ranks[i] = 1.0 / (double)n;
+    old_PageRank[i] = 1.0 / (double)n;
     mean_coloumn_weighed[i] = (1 - WEIGHT) / (double)n;
-        if(n>=100 && ((m%(n/10)) == 0)){
+
+    if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
     }
-
 
   }
 
-printf("\nDEBUG: UPDATE MATRIX\n");
+
+  // PERCHÈ QUESTA FASE È FATTA QUI E NON DIRETTAMENTE DURANTE LA CREAZIONE??
+  printf("\nDEBUG: UPDATE MATRIX\n");
+  
   percento = 0;
   m=0;
+  
   for (int i = 0; i < n; i++){
-        m++;
-
-
+    
+    m++;
+    
     Node *pointer = sparse_matrix[i];
 
-        if(n>=100 && ((m%(n/10)) == 0)){
+    if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);
     }
 
-    while (pointer != NULL){
-
+    // Update the value of the pointer
+    while (pointer != NULL){  
       pointer->value = (WEIGHT / (double)out_degree[pointer->start_node]);
-
       pointer = pointer->next;
     }
-  }    printf("\n");
+
+  }    
+  
+  printf("\n");
 
 
 /*
@@ -200,8 +211,6 @@ printf("\nDEBUG: UPDATE MATRIX\n");
   */
   /////////////
 
-
-  double* old_PageRank=malloc(n * sizeof(double));
   double score_norm;
   int count = 0;
 
@@ -209,18 +218,21 @@ printf("\nDEBUG: UPDATE MATRIX\n");
     printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0;
 
-    for (int i = 0; i < n; i++){
-      old_PageRank[i] = page_ranks[i];
-    }
+    //questo potrebbe essere fatto alla fine di ogni calcolo
+    //for (int i = 0; i < n; i++){
+    //  old_PageRank[i] = page_ranks[i];
+    //}
 
     percento = 0;
     m=0;
     for (int i = 0; i < n; i++){
-    m++;
-        if(n>=100 && ((m%(n/10)) == 0)){
-        percento +=10;
-        printf("%d%% ",percento);
-    }
+
+      m++;
+      
+      if(n>=100 && ((m%(n/10)) == 0)){
+          percento +=10;
+          printf("%d%% ",percento);
+      }
 
       float sum = 0.0;
       Node *currNode = sparse_matrix[i];
@@ -236,27 +248,31 @@ printf("\nDEBUG: UPDATE MATRIX\n");
 
       } while (j < in_degree[i]);
 
+      // somma con colonna costante mean_coloumn_weighed
       page_ranks[i] = sum + mean_coloumn_weighed[i];
 
-      // somma con colonna costante mean_coloumn_weighed
-
+      // take the absolute value of the error 
       old_PageRank[i] = page_ranks[i] - old_PageRank[i];
-
       if (old_PageRank[i] < 0)
         old_PageRank[i] = -old_PageRank[i];
 
+      // sum to the score_norm
       score_norm += old_PageRank[i];
+
+      // reinitialize the old_pagerank value to the current pagerank
+      old_PageRank[i] = page_ranks[i];
     }
 
     count++;
 
   } while (score_norm > ERROR);
-    printf("\n");
+  
+  printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
-      printf("\n");
+  printf("\n");
 
 
-exit(0);
+//exit(0);
 
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n",i,page_ranks[i]);
