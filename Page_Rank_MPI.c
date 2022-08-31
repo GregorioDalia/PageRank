@@ -61,28 +61,26 @@ int main(){
 
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
-      num_nodi_per_processo_min = n/p
-      resto = n%p
-      if(resto == 0){
-        size = num_nodi_per_processo_min;
-      }
-      else{ 
-        size = num_nodi_per_processo_min + 1;
+      int rows_size = n/p;
+      int resto = n%p;
+      if(resto != 0){
+        rows_size ++;
       }
 
-      Node * sparse_matrix[size]
-      for (int k = 0; k < size; k++){
+      Node * sparse_matrix[rows_size];
+      for (int k = 0; k < rows_size; k++){
           sparse_matrix[k] = NULL;
       }
     
-      info[1] = n
+      info[1] = n;
+
       for(int i = 1; i < p; i++){
         if(i < resto) {
-          info[0] = num_nodi_per_processo_min + 1;
+          info[0] = rows_size + 1;
           send(i,info);
         }
         else{
-          info[0] = num_nodi_per_processo_min;
+          info[0] = rows_size;
           send(i,info);
         }
       }
@@ -92,7 +90,7 @@ int main(){
     int info[2]
     
     receive(0, info)
-    size = info[0]
+    rows_size = info[0]
     Node *sparse_matrix_locale[size] // considerare uso di malloc
     int n = info[1]
     
@@ -170,7 +168,7 @@ int main(){
     // Send the edges
     info[0] = -1;
     info[1] = -1;
-    for(i = 1; i < p; i++){
+    for(int i = 1; i < p; i++){
       send(i, info);
       MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
         int tag, MPI_Comm comm)
@@ -226,7 +224,7 @@ int main(){
 
 
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n");
-
+  
   // Same code MASTER and WORKER
   for (int i = 0; i < n; i++){
 
@@ -234,7 +232,7 @@ int main(){
   // il sotto-array di page rank calcolato dal worker e ha dimensione size.
   // Per fare la differenza, il worker accede in old_page_ranks a partire dal proprio rank(nel senso proprio id) e saltando di p
     if(i<rows_size){
-      l_page_ranks[i] = 1.0 / (float)n;
+      local_page_ranks[i] = 1.0 / (float)n;
       mean_coloumn_weighted = (1 - WEIGHT) / (float)n;
       
       Node *pointer = sparse_matrix[i];
