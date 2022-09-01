@@ -60,7 +60,7 @@ int main(){
   float* mean_coloumn_weighed = malloc(n * sizeof(float));
 
   //Creation of the sparse matrix
-  Node *sparse_matrix[n];
+  Node ** sparse_matrix = malloc(n * sizeof(Node*));
 
   printf("DEBUG: INITIALIZATION\n");
   for (int k = 0; k < n; k++){
@@ -77,7 +77,7 @@ int main(){
   int m = 0;
 
   while (!feof(fp)){
-    
+
     m++;
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
@@ -106,11 +106,11 @@ int main(){
 
 
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
-  
+
   percento = 0;
   m=0;
   for (int i = 0; i < n; i++){
-    
+
     m++;
     page_ranks[i] = 1.0 / (float)n;
     old_page_ranks[i] = 1.0 / (float)n;
@@ -124,14 +124,14 @@ int main(){
   }
 
   printf("\nDEBUG: UPDATE MATRIX\n");
-  
+
   percento = 0;
   m=0;
-  
+
   for (int i = 0; i < n; i++){
-    
+
     m++;
-    
+
     Node *pointer = sparse_matrix[i];
 
     if(n>=100 && ((m%(n/10)) == 0)){
@@ -140,13 +140,13 @@ int main(){
     }
 
     // Update the value of the pointer
-    while (pointer != NULL){  
+    while (pointer != NULL){
       pointer->value = (WEIGHT / (float)out_degree[pointer->start_node]);
       pointer = pointer->next;
     }
 
-  }    
-  
+  }
+
   printf("\n");
 
 
@@ -162,7 +162,7 @@ int main(){
     for (int i = 0; i < n; i++){
 
       m++;
-      
+
       if(n>=100 && ((m%(n/10)) == 0)){
           percento +=10;
           printf("%d%% ",percento);
@@ -185,7 +185,7 @@ int main(){
       // somma con colonna costante mean_coloumn_weighed
       page_ranks[i] = sum + mean_coloumn_weighed[i];
 
-      // take the absolute value of the error, using old_page_rank avoiding to create a new variable 
+      // take the absolute value of the error, using old_page_rank avoiding to create a new variable
       old_page_ranks[i] = page_ranks[i] - old_page_ranks[i];
       if (old_page_ranks[i] < 0)
         old_page_ranks[i] = -old_page_ranks[i];
@@ -200,7 +200,7 @@ int main(){
     count++;
 
   } while (score_norm > ERROR);
-  
+
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
