@@ -15,25 +15,55 @@ typedef struct Node
 
 #define WEIGHT 0.85  // Real in (0, 1), best at 0.85
 #define ERROR 0.0001 // Real in (0, +inf), best at 0.0001
+#define MASTER 0    // Rank of the master process
+#define TAG 0       /* MPI message tag parameter */
 
-int main(){
+
+int main(int argc, char *argv[]){
+
+  // Variables for MPI communication              
+  int numtasks;               /* number of MPI tasks */
+  int rank;                   /* my MPI task number */
+  int rc;                     /* return code */
+  MPI_Status status;          /* MPI receive routine parameter */
+
+  // Variables for input file reading
+  //char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+  char filename[] = "./DEMO.txt";       /* file containing the list of the edges */
+  FILE *fp;                             /* file pointer */
+  char ch;                              /* reads the characters in the file */
+  char str[100];                        /* buffer for storing file lines */
+
+  // Variables for page rank algorithm
+  int n, e;                             /* n: number of nodes   e: number of edges */
+  int rows_num;                         /* number of rows managed by each process */
+  int remaining_rows;                   /* remainder of the division n/numtasks */
+  int info[2];                          /* buffer for sending information from master to workers */
+  int fromnode, tonode;                 /* fromnode: start node of an edge    tonode: end node of an edge */
+  int* out_degree;                      /* vector containing the out_degree of all nodes */
+  float* local_sub_page_ranks;          /* sub page_ranks vector of a process */
+  float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
+  float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
+  Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
+  int iterate;                          /* flag: checks if the algorithm is converging or not*/
+  float score_norm;                     /* difference between two consecutive page ranks */
   
-  inizialize;
-  r = mpirank;
-  p = mpip;
-  clock= start();
   
-  int info[2];
+  // MPI initialization
+  MPI_Init(&argc,&argv);
+  MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
+  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+  
 
 
-  // MASTER CODE
-  if(r== 0){ // r rank del processo, 0 è il processo master
-      //char filename[] = "./web-NotreDame.txt";
-      char filename[] = "./DEMO.txt";
+  // Variable for performance measures
+  //PAPI_get_real_usec();
+
+
+  // MASTER CODE : read the input file
+  if(rank == MASTER){ 
+      
       printf("DEBUG: open the file %s",filename);
-
-      FILE *fp;
-      int n,e;  // n: number of nodes   e: number of edges
 
       if ((fp = fopen(filename, "r")) == NULL){
         fprintf(stderr, "[Error] cannot open file");
@@ -41,15 +71,14 @@ int main(){
       }
 
       // Read the data set and get the number of nodes (n) and edges (e)
-      char ch;
-      char str[100];
+      
       ch = getc(fp);
 
       while (ch == '#'){
         fgets(str, 100 - 1, fp);
         // Debug: print title of the data set
         printf("%s", str);
-        sscanf(str, "%*s %d %*s %d", &n, &e); // number of nodes
+        sscanf(str, "%*s %d %*s %d", &n, &e); // number of nodes and edges
         ch = getc(fp);
       }
       
@@ -57,64 +86,64 @@ int main(){
 
       // DEBUG: Print the number of nodes and edges, skip everything else
       printf("DEBUG:\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
-      // Controllo numero archi: maggiore del numero di processi?
 
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
-      int rows_size = n/p;
-      int resto = n%p;
-      if(resto != 0){
-        rows_size ++;
+      rows_num = n/numtasks;
+      remaining_rows = n%numtasks;
+      if(remaining_rows != 0){
+        rows_num ++;
       }
 
-      Node * sparse_matrix[rows_size];
-      for (int k = 0; k < rows_size; k++){
-          sparse_matrix[k] = NULL;
+      sparse_matrix_local = malloc(rows_num * sizeof(Node* ));
+      for (int k = 0; k < rows_num; k++){
+          sparse_matrix_local[k] = NULL;
       }
     
       info[1] = n;
+      
+      // Send the rows number and the number of nodes to all WORKER
+      for(int i = 1; i < numtasks; i++){
+        if(i < remaining_rows) {       
+          info[0] = rows_num + 1;
+          MPI_Send(&info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
 
-      for(int i = 1; i < p; i++){
-        if(i < resto) {
-          info[0] = rows_size + 1;
-          send(i,info);
         }
         else{
-          info[0] = rows_size;
-          send(i,info);
+          info[0] = rows_num;
+          MPI_Send(&info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
+
         }
       }
   }   
   // WORKER : receive the values of the edges
   else{
-    int info[2]
-    
-    receive(0, info)
-    rows_size = info[0]
-    Node *sparse_matrix_locale[size] // considerare uso di malloc
-    int n = info[1]
-    
+       
+    MPI_Recv(&info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
+                    &status);
+                    
+    rows_num = info[0];
 
-    for (int k = 0; k < size; k++){
-      sparse_matrix[k] = NULL;
+    sparse_matrix_local = malloc(rows_num * sizeof(Node* )); 
+    
+    int n = info[1];
+    
+    for (int k = 0; k < rows_num; k++){
+      sparse_matrix_local[k] = NULL;
     }
+
   }
 
-  
 
-  // Creation of the matrix from the file and count of outdegree and indregree of all nodes
-  int fromnode, tonode;
+  // Creation of the array for the out_degree of all nodes
+  out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
 
-  //int* in_degree = malloc(n * sizeof(int)); DA CANCELLARE
-  int* out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
-
+  // Creation of the sub page_ranks vector for a process
+  local_sub_page_ranks = malloc(rows_num * sizeof(float));
   
-  float* new_sub_page_ranks = malloc(size * sizeof(float));
-  //float* old_page_ranks = malloc(n * sizeof(float)); // verione seriale
-  float* old_page_ranks = malloc(n * sizeof(float)); // versione mpi
+  // Creation of the complete page_ranks vector
+  complete_page_ranks = malloc(n * sizeof(float)); // versione mpi
   
-  //float* mean_coloumn_weighted = malloc(n * sizeof(float)); // verione seriale
-  float mean_coloumn_weighted ; // versione mpi
 
   //Creation of the sparse matrix
   //Node *sparse_matrix[n]; DA CANCELLARE
@@ -129,66 +158,64 @@ int main(){
   info[0] = 0; // from node (-1 se finisce file)
   info[1] = 0; // to node (-1 se finisce file)
   
-  if (r == 0){
+  if (rank == MASTER){
     printf("\n");
     printf("DEBUG: READ FILE\n");
 
 
     while (!feof(fp)){
       
-
       fscanf(fp, "%d%d", &fromnode, &tonode);
-
       
       info[0] = fromnode;
       info[1] = tonode;
-      dest = fromnode % p // p numero processi
+      int dest = fromnode % numtasks; // numtasks numero processi
 
       if (dest != 0){
-        send (dest, info, ...);
+
+        MPI_Send(&info, 2, MPI_INT, dest, TAG, MPI_COMM_WORLD);
+
       }
       else{
+
         Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
 
         // INSERIMENTO IN TESTA
-        NuovoArco->next = sparse_matrix[NuovoArco->end_node % size];
-        sparse_matrix[NuovoArco->end_node % size] = NuovoArco;
+        NuovoArco->next = sparse_matrix_local[(NuovoArco->end_node) % rows_num];
+        sparse_matrix_local[NuovoArco->end_node % rows_num] = NuovoArco;
       }
       
 
       // use fromnode and tonode as index
       out_degree[fromnode]++;
-      //in_degree[tonode]++; DA CANCELLARE
 
     }
     
     // Send the edges
     info[0] = -1;
     info[1] = -1;
-    for(int i = 1; i < p; i++){
-      send(i, info);
-      MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
-        int tag, MPI_Comm comm)
+    for(int i = 1; i < numtasks; i++){
+      MPI_Send(&info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
     }
 
     // Mettere barrier?
     // Send the out_degree array
-    for(i = 1; i < p; i++){
-      send(i, out_degree);
-      MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest,
-        int tag, MPI_Comm comm)
+    for(int i = 1; i < numtasks; i++){
+      
+        MPI_Send(&out_degree, n, MPI_INT, i, TAG, MPI_COMM_WORLD);
+
     }
     
    } //fine if master
    else{  // WORKER receive edge code
       
       // Receive the new edge
-      receive(0, info)
-      MPI_Recv(void *info, int count, MPI_Datatype datatype,
-          int source, int tag, MPI_Comm comm, MPI_Status *status)
+      //receive(0, info)
+      MPI_Recv(&info, 2, MPI_INT, 0, TAG, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
 
       // Check if the master doesn't reach the eof
       while(info[0] != -1 && info[1] != -1){
@@ -200,17 +227,19 @@ int main(){
 
 
         // INSERIMENTO IN TESTA
-        NuovoArco->next = sparse_matrix[NuovoArco->end_node % size];
-        sparse_matrix[NuovoArco->end_node % size] = NuovoArco;
+        NuovoArco->next = sparse_matrix_local[NuovoArco->end_node % rows_num];
+        sparse_matrix_local[NuovoArco->end_node % rows_num] = NuovoArco;
 
         // Receive the new edge
-        receive(0, info)
-        MPI_Recv(void *info, int count, MPI_Datatype datatype,
-          int source, int tag, MPI_Comm comm, MPI_Status *status)
+        //receive(0, info)
+        MPI_Recv(&info, 2, MPI_INT, 0, TAG, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
 
       }
 
-      receive(0, out_degree);
+      //receive(0, out_degree);
+      MPI_Recv(&out_degree, n, MPI_INT, 0, TAG, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
   }
   printf("\n");
 
@@ -230,12 +259,12 @@ int main(){
 
   // old_page_rank è il page rank completo, ricevuto dal master, new_page_ranks è invece
   // il sotto-array di page rank calcolato dal worker e ha dimensione size.
-  // Per fare la differenza, il worker accede in old_page_ranks a partire dal proprio rank(nel senso proprio id) e saltando di p
-    if(i<rows_size){
-      local_page_ranks[i] = 1.0 / (float)n;
-      mean_coloumn_weighted = (1 - WEIGHT) / (float)n;
+  // Per fare la differenza, il worker accede in old_page_ranks a partire dal proprio rank(nel senso proprio id) e saltando di numtasks
+    if(i<rows_num){
+      local_sub_page_ranks[i] = 1.0 / (float)n;
+      teleport_probability = (1 - WEIGHT) / (float)n;
       
-      Node *pointer = sparse_matrix[i];
+      Node *pointer = sparse_matrix_local[i];
 
       // Update the value of the pointer
       while (pointer != NULL){  
@@ -246,7 +275,7 @@ int main(){
     }
       
 
-    old_page_ranks[i] = 1.0 / (float)n;
+    complete_page_ranks[i] = 1.0 / (float)n;
     
   }
   
@@ -263,44 +292,43 @@ int main(){
       // FALSE CONDITION :
       //      stop iteration and workers
       //      end
-  float score_norm;
+  
   int count = 0;
 
   //sono il master
   //if(rank == 0)
-  int iterate = 1;
+  iterate = 1;
   while(iterate){
-    //final_page_rank[lungo N non size ];
-    //new_page_rank è local_page_rank
+
     // qui calcolo la mia parte di lavoro
     
-    for (int i = 0,k=r; i < rows_size;i++){
+    for (int i = 0,k=rank; i < rows_num;i++){
 
       float sum = 0.0;
-      Node *currNode = sparse_matrix[i];
+      Node *currNode = sparse_matrix_local[i];
 
       do{
 
-        sum += (local_page_rank[currNode->start_node] * currNode->value);
+        sum += (local_sub_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
 
       } while (currNode!=NULL);
 
-      // somma con colonna costante mean_coloumn_weighted
-      local_page_ranks[i] = sum + mean_coloumn_weighted;
+      // somma con colonna costante teleport_probability
+      local_sub_page_ranks[i] = sum + teleport_probability;
 
       // take the absolute value of the error, using old_page_rank avoiding to create a new variable 
-      old_page_ranks[k] = local_page_ranks[i] - old_page_ranks[k];
-      if (old_page_ranks[k] < 0)
-        old_page_ranks[k] = -old_page_ranks[k];
+      complete_page_ranks[k] = local_sub_page_ranks[i] - complete_page_ranks[k];
+      if (complete_page_ranks[k] < 0)
+        complete_page_ranks[k] = -complete_page_ranks[k];
 
       // sum to the score_norm
-      score_norm += old_page_ranks[k];
+      score_norm += complete_page_ranks[k];
 
       
-      // update the round robin index for moving in old_page_ranks
-      k += p;
+      // update the round robin index for moving in complete_page_ranks
+      k += numtasks;
 
     }
 
@@ -308,32 +336,43 @@ int main(){
     reduce ( score_norm,0); 
     
     // MASTER update the page rank and valuete the error
-    if (rank == 0){
+    if (rank == MASTER){
       
+      float newElem;
       // Receive the new page rank values from the workers  
-      for (i=0,x=0,sender_rank=0;i < n; i++){
+      for (int i=0,x=0,sender_rank=0;i < n; i++){
+        
         if(sender_rank != 0){
-          receive(sender_rank,newElem , int ...)
-          old_page_ranks[i]=newElem;
+
+          MPI_Recv(&newElem, 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
+          complete_page_ranks[i]=newElem;
         }
         else{
           // Update from local value of the MASTER  
-          old_page_ranks[i]=local_page_ranks[x];
+          complete_page_ranks[i]=local_sub_page_ranks[x];
           x++;
         }
         
         sender_rank++;
-        if (sender_rank==p)sender_rank=0;
+        if (sender_rank==numtasks)sender_rank=0;
 
       }
 
       // Evaluate the Error condition for end the iteration
-      if(score_norm <= ERROR) iterate = 0; 
+      if(score_norm <= ERROR)  iterate = 0; 
       
       // Send the new old_page_rank value to all worker
-      for(i=1; i<p; i++){
-        send (iterate);
-        if(iterate) send(i, old_page_ranks);
+      for(int i=1; i<numtasks; i++){
+        
+        MPI_Send(&iterate, 1, MPI_INT, i, TAG, MPI_COMM_WORLD);
+
+        //send (iterate);
+        if(iterate) 
+                
+                MPI_Send(&complete_page_ranks, n, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
+
+                //send(i, complete_page_ranks);
       }
       
 
@@ -343,16 +382,24 @@ int main(){
     else{
 
       // Send the update values of page_rank
-      for(i=0; i < rows_size; i++){
-        send(0, local_page_ranks[i]);
+      for(int i=0; i < rows_num; i++){
+            
+            MPI_Send(&local_sub_page_ranks[i],1 , MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);
+
+               //send(0, local_page_ranks[i]);
       }
       
       // Receive iterate: check wether continue or not
       receive(0, iterate);
+      MPI_Recv(&iterate, 1, MPI_INT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
+      
       
       // Receive the old_page_rank update
       if(iterate){
-        receive(0, old_page_ranks);
+        //receive(0, complete_page_ranks);
+          MPI_Recv(&complete_page_ranks, 1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
       }
       
       
@@ -361,13 +408,13 @@ int main(){
   }
 
   
-  clock= finish();
+  //clock= finish();
   mpi_finalize();
 
   
   // Print the results
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , old_page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , complete_page_ranks[i]);
   }
 
   
