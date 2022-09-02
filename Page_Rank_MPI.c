@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+//#include <papi.h>
 
 // to handle the sparse matrix
 typedef struct Node
@@ -51,8 +52,35 @@ int main(int argc, char *argv[]){
   float score_norm = 0;                 /* difference between two consecutive page ranks */
   float local_score_norm = 0;           /* difference between two consecutive page ranks in the single process */
   float diff;                           /* difference between two elements of consecutive page ranks */
+
+  // Variable for performance measures
+  double wallClock_start, wallClock_stop;
+  /*long_long papi_Time_start , papi_Time_stop;
+  long_long countCacheMiss;
+	int EventSet = PAPI_NULL;*/
+
+  double MPItime_start,MPItime_end;
   
   
+  //inizializzo la libreria PAPI
+  //if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
+  //  printf("Errore init PAPi\n");
+  //  exit(1);
+  //}
+
+  // creo un EvntSet per PAPI
+  //if (PAPI_create_eventset(&EventSet) != PAPI_OK) {
+  //  printf("Errore creazione eventset PAPi\n");
+  //  exit(1);
+  //}
+
+		//EventSet -- intero per un set di eventi (PAPI_create_eventset)
+		//EventCode -- un evento definito (cache miss di L2)
+  //if (PAPI_add_event(EventSet,PAPI_L2_TCM) != PAPI_OK){
+  //  	printf("Errore nell'aggiunta dell'evento\n");
+  //  	exit(1);
+  //}
+
   // MPI initialization
   MPI_Init(&argc,&argv);
   MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
@@ -60,8 +88,7 @@ int main(int argc, char *argv[]){
   
 
 
-  // Variable for performance measures
-  //PAPI_get_real_usec();
+  
 
 
   // MASTER CODE : read the input file
@@ -100,6 +127,11 @@ int main(int argc, char *argv[]){
       info[1] = n;
 
       //printf("DEBUG %d  invio il n nodi ai worker \n",rank);
+
+      //Prendo il wall clock time
+		  //papi_Time_start = PAPI_get_real_usec();
+      MPItime_start = MPI_Wtime();
+
 
       // Send the rows number and the number of nodes to all WORKER
       for(int i = 1; i < numtasks; i++){
@@ -497,7 +529,9 @@ int main(int argc, char *argv[]){
       // Evaluate the Error condition for end the iteration
       //printf("scor norm %f",score_norm);
 
-      if(score_norm <= ERROR)  iterate = 0;
+      if(score_norm <= ERROR)  {
+        iterate = 0;
+      }
       //iterate ++;
 
       score_norm = 0.0;
@@ -562,11 +596,16 @@ int main(int argc, char *argv[]){
 
 
   if(rank == MASTER){
+    //papi_Time_stop = PAPI_get_real_usec();
+    MPItime_end = MPI_Wtime();
+    
     printf("DEBUG: %d END PROCESS:\n",rank);
     // Print the results
     for (int i = 0; i < n; i++){
       printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
     }
+    printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
+    //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);
   }
 
 
