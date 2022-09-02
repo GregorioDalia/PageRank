@@ -202,17 +202,17 @@ int main(int argc, char *argv[]){
         NuovoArco->value = 1;
 
         // INSERIMENTO IN TESTA
-        if(tonode == 0){
-          NuovoArco->next = sparse_matrix_local[0];
-          sparse_matrix_local[0] = NuovoArco;
-        }
-        else{
-          NuovoArco->next = sparse_matrix_local[(rows_num - 1) % end_node];
-          sparse_matrix_local[(rows_num - 1) % end_node] = NuovoArco;
-        }
+        NuovoArco->next = sparse_matrix_local[(tonode - rank) / numtasks];
+        sparse_matrix_local[(tonode - rank) / numtasks] = NuovoArco;
+        
         
       }
       //rank + (rows_num - 1)*p   ((rows_num - 1) % end_node)
+     
+      /*nodo = rank + posizione*numtask
+      posizione*numtask = nodo -rank
+      posizione = (nodo-rank)/numtask
+      */
 
       // use fromnode and tonode as index
       out_degree[fromnode]++;
@@ -266,15 +266,8 @@ int main(int argc, char *argv[]){
 
 
         // INSERIMENTO IN TESTA
-        if(tonode == 0){
-          //tecnicamente mai
-          NuovoArco->next = sparse_matrix_local[0];
-          sparse_matrix_local[0] = NuovoArco;
-        }
-        else{
-          NuovoArco->next = sparse_matrix_local[(rows_num - 1) % end_node];
-          sparse_matrix_local[(rows_num - 1) % end_node] = NuovoArco;
-        }
+        NuovoArco->next = sparse_matrix_local[(tonode - rank) / numtasks];
+        sparse_matrix_local[(tonode - rank) / numtasks] = NuovoArco;
 
         // Receive the new edge
         //receive(0, info)
