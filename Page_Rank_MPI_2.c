@@ -520,13 +520,13 @@ int main(int argc, char *argv[]){
       float maxarray[max_rows_num +1];
       score_norm = local_score_norm;
 
-      for (int sender_rank = 1 ; sender_rank < numtasks;k++){
+      for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
           if(sender_rank < remaining_rows){     
                   
             MPI_Recv(maxarray,max_rows_num + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
             
-            for( int k=0,int i= sender_rank; k<max_rows_num  ; i+numtasks,k++){
+            for( int k=0,i= sender_rank; k<max_rows_num  ; i+numtasks,k++){
               complete_page_ranks[i] = maxarray[k];
             }
 
@@ -537,7 +537,7 @@ int main(int argc, char *argv[]){
                         
               MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
-              for( int k=0,int i= sender_rank; k<min_rows_num ; i+numtasks,k++){
+              for( int k=0, i= sender_rank; k<min_rows_num ; i+numtasks,k++){
                 complete_page_ranks[i] = minarray[k];
               }
 
