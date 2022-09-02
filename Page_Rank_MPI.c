@@ -45,10 +45,12 @@ int main(int argc, char *argv[]){
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
+  Node *pointer;                        /* iterates over sparse_matrix_local */        
   int iterate;                          /* flag: checks if the algorithm is converging or not*/
-  float score_norm = 0;                     /* difference between two consecutive page ranks */
-  float local_score_norm = 0;                     /* difference between two consecutive page ranks */
-
+  float score_norm = 0;                 /* difference between two consecutive page ranks */
+  float local_score_norm = 0;           /* difference between two consecutive page ranks in the single process */
+  float diff;                           /* difference between two elements of consecutive page ranks */
+  
   
   // MPI initialization
   MPI_Init(&argc,&argv);
@@ -185,7 +187,7 @@ int main(int argc, char *argv[]){
       info[1] = tonode;
       int dest = tonode % numtasks; // numtasks numero processi
 
-      if (dest != 0){
+      if (dest != MASTER){
 
         printf("DEBUG: MASTER SEND edge %d %d to %d\n",info[0],info[1],dest);
 
@@ -290,7 +292,7 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = 1.0 / (float)n;
       
       
-      Node *pointer = sparse_matrix_local[i];
+      pointer = sparse_matrix_local[i];
 
       // Update the value of the pointer
       while (pointer != NULL){  
@@ -376,7 +378,7 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error, using old_page_rank avoiding to create a new variable
-      float diff = local_sub_page_ranks[i] - complete_page_ranks[k];
+      diff = local_sub_page_ranks[i] - complete_page_ranks[k];
       if (diff < 0)
         diff = -diff;
 
