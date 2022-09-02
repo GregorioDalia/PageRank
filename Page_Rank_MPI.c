@@ -593,14 +593,14 @@ int main(int argc, char *argv[]){
 
   }
 
-  
+  MPItime_end = MPI_Wtime();
   //clock= finish();
   MPI_Finalize();
 
 
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
-    MPItime_end = MPI_Wtime();
+    
     
     printf("DEBUG: %d END PROCESS:\n",rank);
     // Print the results
