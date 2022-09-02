@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
-      MPItime_start = MPI_Wtime();
+      //MPItime_start = MPI_Wtime();
 
 
       // Send the rows number and the number of nodes to all WORKER
@@ -258,14 +258,14 @@ int main(int argc, char *argv[]){
     }
      
     //printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d", rank);
-    for(int i= 0; i < rows_num; i++){
+    //for(int i= 0; i < rows_num; i++){
       //printf("\nRANK %d   ROW: %d\n",rank, i);
-      pointer = sparse_matrix_local[i];
-      while (pointer != NULL){  
+      //pointer = sparse_matrix_local[i];
+      //while (pointer != NULL){  
         //printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
-        pointer = pointer->next;
-      }
-    }
+        //pointer = pointer->next;
+      //}
+    //}
 
     // Send the edges
     info[0] = -1;
@@ -320,14 +320,14 @@ int main(int argc, char *argv[]){
       }
 
       //printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
-      for(int i= 0; i < rows_num; i++){
+      //for(int i= 0; i < rows_num; i++){
         //printf("\nRANK %d   ROW: %d\n",rank, i);
-        pointer = sparse_matrix_local[i];
-          while (pointer != NULL){  
+        //pointer = sparse_matrix_local[i];
+          //while (pointer != NULL){  
             //printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
-            pointer = pointer->next;
-          }
-      }
+            //pointer = pointer->next;
+          //}
+      //}
 
       //receive(0, out_degree);
       MPI_Recv(out_degree, n, MPI_INT, 0, TAG, MPI_COMM_WORLD,
@@ -347,7 +347,9 @@ int main(int argc, char *argv[]){
 
 
   //printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
-  
+  if(rank==MASTER)
+    MPItime_start = MPI_Wtime();
+
   teleport_probability = (1 - WEIGHT) / (float)n;
   // Same code MASTER and WORKER
   for (int i = 0; i < n; i++){
@@ -390,7 +392,7 @@ int main(int argc, char *argv[]){
       //      stop iteration and workers
       //      end
   
-  int count = 0;
+  //int count = 0;
 
 
   //sono il master
@@ -404,7 +406,7 @@ int main(int argc, char *argv[]){
   /// 
 
 
-  for (int i = 0; i < rows_num;i++){
+  /*for (int i = 0; i < rows_num;i++){
     Node *currNode = sparse_matrix_local[i];
     do{
         //printf("DEBUG: %d currNode->start_node:  %d  currNode->value:  %f\n",rank,currNode->start_node,currNode->value);
@@ -412,10 +414,11 @@ int main(int argc, char *argv[]){
       } while (currNode!=NULL);
 
       //printf("\n");
-  }
+  }*/
   ////
   //return 0;
-
+  
+    
   iterate = 1;
   //printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
