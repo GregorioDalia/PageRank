@@ -213,10 +213,12 @@ int main(int argc, char *argv[]){
     }
      
     printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
-    pointer = sparse_matrix_local[i];
-    while (pointer != NULL){  
-      printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
-      pointer = pointer->next;
+    for(int i= 0; i < rows_num; i++){
+      pointer = sparse_matrix_local[i];
+      while (pointer != NULL){  
+        printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
+        pointer = pointer->next;
+      }
     }
 
     // Send the edges
@@ -270,10 +272,12 @@ int main(int argc, char *argv[]){
       }
 
       printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
+      for(int i= 0; i < rows_num; i++){
       pointer = sparse_matrix_local[i];
-      while (pointer != NULL){  
-        printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
-        pointer = pointer->next;
+        while (pointer != NULL){  
+          printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
+          pointer = pointer->next;
+        }
       }
 
       //receive(0, out_degree);
