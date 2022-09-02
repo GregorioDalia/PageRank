@@ -248,6 +248,8 @@ int main(int argc, char *argv[]){
       // Check if the master doesn't reach the eof
       while(info[0] != -1 && info[1] != -1){
         
+        fromnode = info[0];
+        tonode = info[1];
 
         Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
@@ -273,11 +275,12 @@ int main(int argc, char *argv[]){
 
       printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
       for(int i= 0; i < rows_num; i++){
-      pointer = sparse_matrix_local[i];
-        while (pointer != NULL){  
-          printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
-          pointer = pointer->next;
-        }
+        printf("ROW: %d\n", i);
+        pointer = sparse_matrix_local[i];
+          while (pointer != NULL){  
+            printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
+            pointer = pointer->next;
+          }
       }
 
       //receive(0, out_degree);
@@ -324,6 +327,8 @@ int main(int argc, char *argv[]){
     complete_page_ranks[i] = 1.0 / (float)n;
     
   }
+
+  
   
   for (int i = 0; i < n; i++){
     printf("INITIAL PAGE RANK\n");
