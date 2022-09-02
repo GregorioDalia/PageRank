@@ -53,6 +53,8 @@ int main(int argc, char *argv[]){
   float local_score_norm = 0;           /* difference between two consecutive page ranks in the single process */
   float diff;                           /* difference between two elements of consecutive page ranks */
 
+  int min_rows_num ;
+  int max_rows_num;
   // Variable for performance measures
   double wallClock_start, wallClock_stop;
   /*long_long papi_Time_start , papi_Time_stop;
@@ -121,8 +123,8 @@ int main(int argc, char *argv[]){
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
       //rows_num = n/numtasks;
-      int min_rows_num = n/numtasks;
-      int max_rows_num = min_rows_num + 1;
+       min_rows_num = n/numtasks;
+       max_rows_num = min_rows_num + 1;
       
       remaining_rows = n%numtasks;
       
