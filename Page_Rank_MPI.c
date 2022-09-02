@@ -94,16 +94,7 @@ int main(int argc, char *argv[]){
       
       rows_num = n/numtasks;
       remaining_rows = n%numtasks;
-      if(remaining_rows != 0){
-        rows_num ++;
-      }
-
-      printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
-
-      sparse_matrix_local = malloc(rows_num * sizeof(Node* ));
-      for (int k = 0; k < rows_num; k++){
-          sparse_matrix_local[k] = NULL;
-      }
+      
     
       info[1] = n;
 
@@ -126,6 +117,21 @@ int main(int argc, char *argv[]){
 
         }
       }
+
+
+      if(remaining_rows != 0){
+        rows_num ++;
+      }
+
+      printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
+
+      sparse_matrix_local = malloc(rows_num * sizeof(Node* ));
+      for (int k = 0; k < rows_num; k++){
+          sparse_matrix_local[k] = NULL;
+      }
+
+
+
   }   
   // WORKER : receive the values of the edges
   else{
@@ -221,7 +227,7 @@ int main(int argc, char *argv[]){
      
     printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d", rank);
     for(int i= 0; i < rows_num; i++){
-      printf("\nROW: %d\n", i);
+      printf("\nRANK %d   ROW: %d\n",rank, i);
       pointer = sparse_matrix_local[i];
       while (pointer != NULL){  
         printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
@@ -283,7 +289,7 @@ int main(int argc, char *argv[]){
 
       printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
       for(int i= 0; i < rows_num; i++){
-        printf("ROW: %d\n", i);
+        printf("\nRANK %d   ROW: %d\n",rank, i);
         pointer = sparse_matrix_local[i];
           while (pointer != NULL){  
             printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
