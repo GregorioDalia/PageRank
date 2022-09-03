@@ -482,7 +482,11 @@ int main(int argc, char *argv[]){
 
       //printf("DEBUG: diff %f\n", diff);
       // sum to the score_norm
+
+      float temp = local_score_norm + diff;
+      printf("PROCESS %d from %f to %f\n",rank,local_score_norm,temp);
       local_score_norm += diff;
+
       //printf("DEBUG: local score norm %f\n", local_score_norm);
 
       //printf("DEBUG: %d end iteration\n",rank);
@@ -509,6 +513,7 @@ int main(int argc, char *argv[]){
         
       
       score_norm = local_score_norm;
+      printf("PROCESS %d score norm = %f\n",rank,score_norm);
       //printf("DEBUG: score norm %f\n", score_norm);
 
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
