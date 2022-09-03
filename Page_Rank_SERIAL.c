@@ -157,7 +157,7 @@ int main(){
 
   do{
     printf("\nDEBUG: GIRO N: %d\n", count + 1);
-    score_norm = 0;
+    score_norm = 0.0;
 
     percento = 0;
     m=0;
@@ -173,27 +173,26 @@ int main(){
       float sum = 0.0;
       Node *currNode = sparse_matrix[i];
 
-      int j = 0;
       do{
 
         sum += (page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
 
-        j++;
 
-      } while (j < in_degree[i]);
+      } while (currNode!=NULL);
 
       // somma con colonna costante mean_coloumn_weighed
       page_ranks[i] = sum + mean_coloumn_weighed;
 
+      float diff = page_ranks[i] - old_page_ranks[i];
+
       // take the absolute value of the error, using old_page_rank avoiding to create a new variable
-      old_page_ranks[i] = page_ranks[i] - old_page_ranks[i];
-      if (old_page_ranks[i] < 0)
-        old_page_ranks[i] = -old_page_ranks[i];
+      if (diff < 0)
+        diff = -diff;
 
       // sum to the score_norm
-      score_norm += old_page_ranks[i];
+      score_norm += diff;
 
       // reinitialize the old_pagerank value to the current pagerank
       old_page_ranks[i] = page_ranks[i];
