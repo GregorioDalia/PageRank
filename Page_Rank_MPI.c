@@ -30,8 +30,8 @@ int main(int argc, char *argv[]){
 
   // Variables for input file reading
   //char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
-  char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
-  //char filename[] = "./DEMO.txt";       /* file containing the list of the edges */
+  //char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+  char filename[] = "./DEMO.txt";       /* file containing the list of the edges */
   FILE *fp;                             /* file pointer */
   char ch;                              /* reads the characters in the file */
   char str[100];                        /* buffer for storing file lines */
