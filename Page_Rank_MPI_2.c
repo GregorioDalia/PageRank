@@ -479,7 +479,7 @@ int main(int argc, char *argv[]){
 
     }
     
-    for ( int  i = 0;i<rows_num;i+1){
+    for ( int  i = 0;i<rows_num;i++){
 
         printf("DEBUG %d// local page rank of my node %d is %f",rank,i,local_sub_page_ranks[i]);
     }
