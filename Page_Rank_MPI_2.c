@@ -171,7 +171,7 @@ int main(int argc, char *argv[]){
 
       printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
-      sparse_matrix_local = malloc(rows_num * sizeof(Node *));
+      sparse_matrix_local = malloc(rows_num * sizeof(Node ));
       for (int k = 0; k < rows_num; k++){
           sparse_matrix_local[k] = NULL;
       }
@@ -187,7 +187,7 @@ int main(int argc, char *argv[]){
                     &status);
     rows_num = info[0];
 
-    sparse_matrix_local = malloc(rows_num * sizeof(Node *)); 
+    sparse_matrix_local = malloc(rows_num * sizeof(Node )); 
     
     n = info[1];
     

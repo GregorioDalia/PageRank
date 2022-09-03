@@ -60,7 +60,7 @@ int main(){
   float mean_coloumn_weighed ;
 
   //Creation of the sparse matrix
-  Node ** sparse_matrix = malloc(n * sizeof(Node));
+  Node ** sparse_matrix = malloc(n * sizeof(Node*));
 
   printf("DEBUG: INITIALIZATION\n");
   for (int k = 0; k < n; k++){
