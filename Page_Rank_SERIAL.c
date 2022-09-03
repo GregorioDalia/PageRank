@@ -248,7 +248,7 @@ int main(int argc, char *argv[]){
     }
     count++;
 
-    printf("\nscore norm is %f\n",score_norm);
+    printf("score norm is %0.50f\n",score_norm);
 
   } while (score_norm > ERROR);
 
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]){
 
 
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE OF NODE %d IS : %0.20f \n", i , page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS : %0.50f \n", i , page_ranks[i]);
   }
 
   return 0;
