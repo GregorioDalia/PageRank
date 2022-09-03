@@ -103,6 +103,21 @@ int main(){
 
   }
   printf("\n");
+  /*printf("MATRIX IS \n");
+  for (int i = 0 ; i < n ; i++){
+
+    printf("ROW %d",i);
+    Node *pointer = sparse_matrix[i];
+
+    do{
+        printf(" %d - %d /// ",pointer->end_node,pointer->start_node);
+        pointer=pointer->next;
+    }while(pointer !=NULL);
+
+    printf("\n");
+
+  }
+  */
 
 
   printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
@@ -150,6 +165,21 @@ int main(){
   }
 
   printf("\n");
+  /*printf("MATRIX IS \n");
+  for (int i = 0 ; i < n ; i++){
+
+    printf("ROW %d",i);
+    Node *pointer = sparse_matrix[i];
+
+    do{
+        printf(" %d - %d = %f /// ",pointer->end_node,pointer->start_node,pointer->value);
+        pointer=pointer->next;
+    }while(pointer !=NULL);
+
+    printf("\n");
+
+  }
+  */
 
 
   float score_norm;
@@ -158,6 +188,13 @@ int main(){
   do{
     printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0.0;
+
+    /*
+    printf("DEBUG : INITIAL PAGE RANK\n");
+    for(int i = 0; i < n ;i++){
+        printf("Node %d is %f\n",i,page_ranks[i]);
+    }
+    */
 
     percento = 0;
     m=0;
@@ -175,7 +212,7 @@ int main(){
 
       do{
 
-        sum += (page_ranks[currNode->start_node] * currNode->value);
+        sum += (old_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
 
@@ -183,7 +220,10 @@ int main(){
       } while (currNode!=NULL);
 
       // somma con colonna costante mean_coloumn_weighed
+      //printf("row %d finalsum = %f\n",i,sum);
       page_ranks[i] = sum + mean_coloumn_weighed;
+      //printf("row %d page_ranks[i] = %f\n",i,page_ranks[i]);
+
 
       float diff = page_ranks[i] - old_page_ranks[i];
 
@@ -195,13 +235,16 @@ int main(){
       score_norm += diff;
 
       // reinitialize the old_pagerank value to the current pagerank
-      old_page_ranks[i] = page_ranks[i];
-      printf("at row %d old page is %f \n",i,old_page_ranks[i]);
+      //old_page_ranks[i] = page_ranks[i];
+      //printf("at row %d old page is %f \n",i,old_page_ranks[i]);
     }
 
+    for (int i =0 ; i < n;i++){
+        old_page_ranks[i]=page_ranks[i];
+    }
     count++;
 
-    printf("\nscore norm is %0.15f\n",score_norm);
+    printf("\nscore norm is %f\n",score_norm);
 
   } while (score_norm > ERROR);
 
@@ -211,7 +254,7 @@ int main(){
 
 
   for (int i = 0; i < n; i++){
-    printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , page_ranks[i]);
+    printf("THE PAGE RANKE OF NODE %d IS : %f \n", i , page_ranks[i]);
   }
 
   return 0;
