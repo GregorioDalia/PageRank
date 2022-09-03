@@ -159,6 +159,8 @@ int main(int argc, char *argv[]){
 
       if(remaining_rows != 0){
         rows_num = max_rows_num;
+      }else{
+        rows_num = min_rows_num;
       }
 
       printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
