@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
   // MASTER CODE : read the input file
   if(rank == MASTER){ 
       
-      printf("DEBUG: MASTER open the file %s\n",filename);
+      //printf("DEBUG: MASTER open the file %s\n",filename);
 
       if ((fp = fopen(filename, "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
@@ -117,7 +117,7 @@ int main(int argc, char *argv[]){
       ungetc(ch, fp);
 
       // DEBUG: Print the number of nodes and edges, skip everything else
-      printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
+      //printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
     
       info[1] = n;
 
-      printf("DEBUG %d  invio il n nodi ai worker \n",rank);
+      //printf("DEBUG %d  invio il n nodi ai worker \n",rank);
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
@@ -142,14 +142,14 @@ int main(int argc, char *argv[]){
       for(int i = 1; i < numtasks; i++){
         if(i < remaining_rows) {       
           info[0] = max_rows_num;
-          printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
+          //printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
 
           MPI_Send(info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
 
         }
         else{
           info[0] = min_rows_num;
-          printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
+          //printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
 
           MPI_Send(info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
         rows_num = min_rows_num;
       }
 
-      printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
+      //printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
       sparse_matrix_local = malloc(rows_num * sizeof(Node* ));
       for (int k = 0; k < rows_num; k++){
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]){
     
     n = info[1];
     
-    printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
+    //printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
 
     
     for (int k = 0; k < rows_num; k++){
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]){
 
   // Creation of the array for the out_degree of all nodes
   
-  printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
+  //printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
 
   out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
 
@@ -210,7 +210,7 @@ int main(int argc, char *argv[]){
   //Creation of the sparse matrix
   //Node *sparse_matrix[n]; DA CANCELLARE
 
-  printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
+  //printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
   for (int k = 0; k < n; k++){
     //in_degree[k] = 0; DA CANCELLARE
     out_degree[k] = 0;
@@ -222,7 +222,7 @@ int main(int argc, char *argv[]){
   
   if (rank == MASTER){
     //printf("\n");
-    printf("DEBUG: Master continue to  READ FILE\n");
+    //printf("DEBUG: Master continue to  READ FILE\n");
 
     while (!feof(fp)){
       
@@ -234,7 +234,7 @@ int main(int argc, char *argv[]){
 
       if (dest != MASTER){
 
-        printf("DEBUG: MASTER SEND edge %d %d to %d\n",info[0],info[1],dest);
+        //printf("DEBUG: MASTER SEND edge %d %d to %d\n",info[0],info[1],dest);
 
         MPI_Send(info, 2, MPI_INT, dest, TAG, MPI_COMM_WORLD);
 
@@ -264,6 +264,7 @@ int main(int argc, char *argv[]){
 
     }
      
+     /*
     printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d", rank);
     for(int i= 0; i < rows_num; i++){
       printf("\nRANK %d   ROW: %d\n",rank, i);
@@ -272,7 +273,7 @@ int main(int argc, char *argv[]){
         printf("Start node: %d\nEnd node: %d\nValue: %f\n", pointer->start_node, pointer->end_node, pointer ->value);
         pointer = pointer->next;
       }
-    }
+    }*/
 
     // Send the edges
     info[0] = -1;
@@ -283,7 +284,7 @@ int main(int argc, char *argv[]){
 
     // Mettere barrier?
     // Send the out_degree array
-    printf("DEBUG %d INVIO OUT DEGREE\n",rank);
+    //printf("DEBUG %d INVIO OUT DEGREE\n",rank);
     for(int i = 1; i < numtasks; i++){
         MPI_Send(out_degree, n, MPI_INT, i, TAG, MPI_COMM_WORLD);
     }
@@ -296,7 +297,7 @@ int main(int argc, char *argv[]){
       MPI_Recv(info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
              MPI_STATUS_IGNORE);
 
-      printf("DEBUG: %d WORKER HAS RECIVED %d - %d edge\n",rank,info[0],info[1]);
+      //printf("DEBUG: %d WORKER HAS RECIVED %d - %d edge\n",rank,info[0],info[1]);
 
       // Check if the master doesn't reach the eof
       while(info[0] != -1 && info[1] != -1){
@@ -316,16 +317,17 @@ int main(int argc, char *argv[]){
 
         // Receive the new edge
         //receive(0, info)
-        printf("DEBUG %d: RICEVO  ARCO\n",rank);
+        //printf("DEBUG %d: RICEVO  ARCO\n",rank);
 
         MPI_Recv(info, 2, MPI_INT, 0, TAG, MPI_COMM_WORLD,
              MPI_STATUS_IGNORE);
         
-        printf("DEBUG: %d WORKER HAS RECIVED %d - %d edge\n",rank,info[0],info[1]);
+        //printf("DEBUG: %d WORKER HAS RECIVED %d - %d edge\n",rank,info[0],info[1]);
 
 
       }
 
+      /*
       printf("\nDEBUG: SPARSE MATRIX IN PROCESS %d\n", rank);
       for(int i= 0; i < rows_num; i++){
         printf("\nRANK %d   ROW: %d\n",rank, i);
@@ -335,12 +337,12 @@ int main(int argc, char *argv[]){
             pointer = pointer->next;
           }
       }
-
+      */
       //receive(0, out_degree);
       MPI_Recv(out_degree, n, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
              MPI_STATUS_IGNORE);
       
-      printf("DEBUG: %d WORKER HAS RECIVED the outdegree\n", rank);
+      //printf("DEBUG: %d WORKER HAS RECIVED the outdegree\n", rank);
 
   }
 
@@ -353,7 +355,7 @@ int main(int argc, char *argv[]){
  
 
 
-  printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
+  //printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
   if(rank==MASTER)
     MPItime_start = MPI_Wtime();
 
@@ -385,10 +387,11 @@ int main(int argc, char *argv[]){
   }
 
   
-  
+  /*
   for (int i = 0; i < n; i++){
     printf("DEBUG: %d INITIAL THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
   }   
+  */
 
   // Matrix moltiplication : same code MASTER WORKER
   // receive the score_values from workers      send the score_norm  and result value to MASTER : WORKER
@@ -407,13 +410,13 @@ int main(int argc, char *argv[]){
   //if(rank == 0)
   //printf("RANK: %d  n: %d   rows_num: %d             \n",rank,n,rows_num);
   //printf("Outdegree: \n");
-
+  /*
   for(int i=0; i<n ;i++)
     printf("RANK: %d    i= %d  out_deg= %d\n",rank,i,out_degree[i]);
-
+  */
   /// 
 
-
+/*
   for (int i = 0; i < rows_num;i++){
     Node *currNode = sparse_matrix_local[i];
     do{
@@ -423,6 +426,7 @@ int main(int argc, char *argv[]){
 
       //printf("\n");
   }
+  */
   ////
   //return 0;
   
@@ -479,18 +483,21 @@ int main(int argc, char *argv[]){
 
     }
     
+    /*
     for ( int  i = 0;i<rows_num;i++){
 
         printf("DEBUG %d// local page rank of my node %d is %f\n",rank,i,local_sub_page_ranks[i]);
     }
-
+    */
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
 
+      /*
        printf("DEBUG: COMPLETE PAGE RANKS +PRE+ RECEIVE\n");
       for (int i = 0 ; i<n ; i++){
         printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
+      */
          
       float minarray[min_rows_num+1];
       float maxarray[max_rows_num +1];
@@ -503,11 +510,12 @@ int main(int argc, char *argv[]){
                   
             MPI_Recv(maxarray,max_rows_num + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
             
-            for( int k=0,i= sender_rank; k<max_rows_num  ; i+numtasks,k++){
+            for( int k=0,i= sender_rank; k<max_rows_num  ; k++){
 
-              printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],maxarray[k]);
+              //printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],maxarray[k]);
 
               complete_page_ranks[i] = maxarray[k];
+              i=i+numtasks;
             }
 
             score_norm += maxarray[max_rows_num];
@@ -517,11 +525,13 @@ int main(int argc, char *argv[]){
                         
               MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
-              for( int k=0, i= sender_rank; k<min_rows_num ; i+numtasks,k++){
+              for( int k=0, i= sender_rank; k<min_rows_num ; k++){
                 
-                printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],minarray[k]);
+                //printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],minarray[k]);
 
                 complete_page_ranks[i] = minarray[k];
+                i=i+numtasks;
+
               }
 
               score_norm += minarray[min_rows_num];
@@ -536,10 +546,10 @@ int main(int argc, char *argv[]){
           k += numtasks;
       }
       
-      printf("DEBUG: COMPLETE PAGE RANKS POST RECEIVE\n");
-      for (int i = 0 ; i<n ; i++){
-        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
-      }
+      //printf("DEBUG: COMPLETE PAGE RANKS POST RECEIVE\n");
+      //for (int i = 0 ; i<n ; i++){
+       // printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+      //}
       
       if(score_norm <= ERROR)  {
         iterate = 0;
@@ -568,9 +578,9 @@ int main(int argc, char *argv[]){
 
       MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
-       printf("DEBUG WORKER : COMPLETE PAGE RANKS POST RECEIVE\n");
+       //printf("DEBUG WORKER : COMPLETE PAGE RANKS POST RECEIVE\n");
       for (int i = 0 ; i<n ; i++){
-        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+        //printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
       
       iterate = complete_page_ranks[n];
