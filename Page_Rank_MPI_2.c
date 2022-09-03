@@ -579,15 +579,15 @@ int main(int argc, char *argv[]){
       MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
        //printf("DEBUG WORKER : COMPLETE PAGE RANKS POST RECEIVE\n");
-      for (int i = 0 ; i<n ; i++){
+      /*for (int i = 0 ; i<n ; i++){
         //printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
-      
+      */
       iterate = complete_page_ranks[n];
 
     }
 
-
+    exit(1);
   }
 
   
