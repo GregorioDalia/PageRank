@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   // MASTER CODE : read the input file
   if(rank == MASTER){ 
       
-      //printf("DEBUG: MASTER open the file %s\n",filename);
+      printf("DEBUG: MASTER open the file %s\n",filename);
 
       if ((fp = fopen(filename, "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
       while (ch == '#'){
         fgets(str, 100 - 1, fp);
         // Debug: print title of the data set
-        //printf("%s", str);
+        printf("%s", str);
         sscanf(str, "%*s %d %*s %d", &n, &e); // number of nodes and edges
         ch = getc(fp);
       }
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]){
     
       info[1] = n;
 
-      //printf("DEBUG %d  invio il n nodi ai worker \n",rank);
+      printf("DEBUG %d  invio il n nodi ai worker \n",rank);
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
@@ -169,7 +169,7 @@ int main(int argc, char *argv[]){
         rows_num = min_rows_num;
       }
 
-      //printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
+      printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
       sparse_matrix_local = malloc(rows_num * sizeof(Node *));
       for (int k = 0; k < rows_num; k++){
@@ -191,7 +191,7 @@ int main(int argc, char *argv[]){
     
     n = info[1];
     
-    //printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
+    printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
 
     
     for (int k = 0; k < rows_num; k++){
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]){
   //Creation of the sparse matrix
   //Node *sparse_matrix[n]; DA CANCELLARE
 
-  //printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
+  printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
   for (int k = 0; k < n; k++){
     //in_degree[k] = 0; DA CANCELLARE
     out_degree[k] = 0;
@@ -361,7 +361,7 @@ int main(int argc, char *argv[]){
  
 
 
-  //printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
+  printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
   if(rank==MASTER)
     MPItime_start = MPI_Wtime();
 
@@ -438,10 +438,10 @@ int main(int argc, char *argv[]){
   
     
   iterate = 1;
-  //printf("DEBUG: %d Start to iterete\n",rank);
+  printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
-
+    printf("GIRO\n");
       local_score_norm = 0;
     // qui calcolo la mia parte di lavoro
     
