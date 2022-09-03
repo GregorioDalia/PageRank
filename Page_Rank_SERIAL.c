@@ -18,8 +18,8 @@ typedef struct Node
 int main(){
 
   // Open the data set
-  //char filename[] = "./web-NotreDame.txt";
-  char filename[] = "./DEMO.txt";
+  char filename[] = "./web-NotreDame.txt";
+  //char filename[] = "./DEMO.txt";
   printf("DEBUG: open the file %s",filename);
 
   FILE *fp;
@@ -60,7 +60,7 @@ int main(){
   float mean_coloumn_weighed ;
 
   //Creation of the sparse matrix
-  Node ** sparse_matrix = malloc(n * sizeof(Node*));
+  Node ** sparse_matrix = malloc(n * sizeof(Node));
 
   printf("DEBUG: INITIALIZATION\n");
   for (int k = 0; k < n; k++){
@@ -87,7 +87,7 @@ int main(){
         printf("%d%% ",percento);
     }
 
-    Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
+    Node* NuovoArco = malloc(sizeof(Node));
     NuovoArco->start_node = fromnode;
     NuovoArco->end_node = tonode;
     NuovoArco->value = 1;

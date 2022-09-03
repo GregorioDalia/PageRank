@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
   int n, e;                             /* n: number of nodes   e: number of edges */
   int rows_num;                         /* number of rows managed by each process */
   int remaining_rows;                   /* remainder of the division n/numtasks */
-  int info[2];                          /* buffer for sending information from master to workers */
+  int* info;                          /* buffer for sending information from master to workers */
   int fromnode, tonode;                 /* fromnode: start node of an edge    tonode: end node of an edge */
   int* out_degree;                      /* vector containing the out_degree of all nodes */
   float* local_sub_page_ranks;          /* sub page_ranks vector of a process */
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
   
 
 
-  
+  info = malloc ( 2 * sizeof(int));  
 
 
   // MASTER CODE : read the input file
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]){
 
       //printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
-      sparse_matrix_local = malloc(rows_num * sizeof(Node* ));
+      sparse_matrix_local = malloc(rows_num * sizeof(Node *));
       for (int k = 0; k < rows_num; k++){
           sparse_matrix_local[k] = NULL;
       }
@@ -183,11 +183,11 @@ int main(int argc, char *argv[]){
   else{
        
     
-    MPI_Recv(&info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
+    MPI_Recv(info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
                     &status);
     rows_num = info[0];
 
-    sparse_matrix_local = malloc(rows_num * sizeof(Node* )); 
+    sparse_matrix_local = malloc(rows_num * sizeof(Node *)); 
     
     n = info[1];
     
@@ -247,7 +247,7 @@ int main(int argc, char *argv[]){
       }
       else{
 
-        Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
+        Node * NuovoArco =  malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
@@ -310,8 +310,8 @@ int main(int argc, char *argv[]){
         
         fromnode = info[0];
         tonode = info[1];
-
-        Node *NuovoArco = (struct Node *)malloc(sizeof(Node));
+ 
+        Node * NuovoArco = malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
