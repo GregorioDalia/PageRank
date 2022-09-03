@@ -127,6 +127,10 @@ int main(int argc, char *argv[]){
        min_rows_num = n/numtasks;
        max_rows_num = min_rows_num + 1;
       
+      minarray = malloc((min_rows_num+1) * sizeof(float));
+
+      maxarray = malloc((max_rows_num + 1) * sizeof(float));
+      
       remaining_rows = n%numtasks;
       
     
@@ -500,10 +504,7 @@ int main(int argc, char *argv[]){
         printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
       */
-         
-      minarray = malloc((min_rows_num+1) * sizeof(float));
-
-      maxarray = malloc((max_rows_num + 1) * sizeof(float));
+        
       
       score_norm = local_score_norm;
       //printf("DEBUG: score norm %f\n", score_norm);
