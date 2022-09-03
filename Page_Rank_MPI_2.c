@@ -575,7 +575,7 @@ int main(int argc, char *argv[]){
       
       printf("DEBUG: COMPLETE PAGE RANKS");
       for (int i = 0 ; i<n ; i++){
-        printf("Page rank of %d is %0.5f ",i,complete_page_ranks[i]);
+        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
 
       // Send the new old_page_rank value to all worker
