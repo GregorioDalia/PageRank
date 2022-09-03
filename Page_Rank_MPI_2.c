@@ -535,7 +535,7 @@ int main(int argc, char *argv[]){
                 //send(i, complete_page_ranks);
       }
 
-     printf("GIRO con + %0.20f\n",score_norm);
+     printf("GIRO con + %0.50f\n",score_norm);
 
 
     //exit(1);
@@ -579,7 +579,7 @@ int main(int argc, char *argv[]){
     
     
     for (int i = 0; i < n; i++){
-      printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.20f \n",rank, i , complete_page_ranks[i]);
+      printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.50f \n",rank, i , complete_page_ranks[i]);
     }
     
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
