@@ -567,6 +567,12 @@ int main(int argc, char *argv[]){
       
       complete_page_ranks[n] = iterate;
 
+      for (int i = 0,k = 0 ; i<rows_num;i++){
+          
+          complete_page_ranks[k]=local_sub_page_ranks[i];
+          k += numtasks;
+      }
+
       // Send the new old_page_rank value to all worker
       for(int i=1; i<numtasks; i++){
         MPI_Send(complete_page_ranks, n+1, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
