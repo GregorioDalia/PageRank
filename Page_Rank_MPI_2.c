@@ -573,7 +573,7 @@ int main(int argc, char *argv[]){
 
  
 
-    exit(1);
+    //exit(1);
 
     }
     // WORKERS send the new page_rank values
