@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<string.h>
 
 // to handle the sparse matrix
 typedef struct Node
@@ -15,11 +16,14 @@ typedef struct Node
 #define WEIGHT 0.85  // Real in (0, 1), best at 0.85
 #define ERROR 0.0001 // Real in (0, +inf), best at 0.0001
 
-int main(){
+int main(int argc, char *argv[]){
 
   // Open the data set
-  char filename[] = "./web-NotreDame.txt";
+  //char filename[] = "./web-NotreDame.txt";
   //char filename[] = "./DEMO.txt";
+  char filename[10];
+  strcpy(filename,argv[1]);
+
   printf("DEBUG: open the file %s",filename);
 
   FILE *fp;

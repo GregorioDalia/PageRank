@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<string.h>
 #include <mpi.h>
 //#include <papi.h>
 
@@ -30,7 +31,9 @@ int main(int argc, char *argv[]){
 
   // Variables for input file reading
   //char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
-  char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+  //char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+    char filename[10];
+  strcpy(filename,argv[1]);
   FILE *fp;                             /* file pointer */
   char ch;                              /* reads the characters in the file */
   char str[100];                        /* buffer for storing file lines */
@@ -586,7 +589,7 @@ int main(int argc, char *argv[]){
                 //send(i, complete_page_ranks);
       }
 
-     printf("GIRO con + %f\n",score_norm);
+     printf("GIRO con + %0.20f\n",score_norm);
 
 
     //exit(1);
