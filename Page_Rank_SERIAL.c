@@ -86,6 +86,12 @@ int main(int argc, char *argv[]){
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
+    if(argv[2] == 1){
+    fromnode=fromnode -1 ;
+    tonode=tonode-1;
+    }
+
+
     if(e>=100 && ((m%(e/10)) == 0)){
         percento +=10;
         printf("%d%% ",percento);

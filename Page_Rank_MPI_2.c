@@ -236,6 +236,11 @@ int main(int argc, char *argv[]){
     while (!feof(fp)){
       
       fscanf(fp, "%d%d", &fromnode, &tonode);
+    if(argv[2] == 1){
+    fromnode=fromnode -1 ;
+    tonode=tonode-1;
+    }
+
       
       info[0] = fromnode;
       info[1] = tonode;
