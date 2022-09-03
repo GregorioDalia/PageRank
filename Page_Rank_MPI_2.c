@@ -283,7 +283,7 @@ int main(int argc, char *argv[]){
 
     // Mettere barrier?
     // Send the out_degree array
-    printf("DEBUG %d INVIO OUT DEGREE",rank);
+    printf("DEBUG %d INVIO OUT DEGREE\n",rank);
     for(int i = 1; i < numtasks; i++){
         MPI_Send(out_degree, n, MPI_INT, i, TAG, MPI_COMM_WORLD);
     }
@@ -437,7 +437,7 @@ int main(int argc, char *argv[]){
 
       float sum = 0.0;
       Node *currNode = sparse_matrix_local[i];
-      printf("DEBUG: %d currnode allocate\n",rank);
+      //printf("DEBUG: %d currnode allocate\n",rank);
 
       do{
         /*
@@ -457,9 +457,9 @@ int main(int argc, char *argv[]){
 
       } while (currNode!=NULL);
 
-      printf("DEBUG: total sum %f\n", sum);
+      //printf("DEBUG: total sum %f\n", sum);
 
-      printf("DEBUG: %d local_sub_page_ranks update\n",rank);
+      //printf("DEBUG: %d local_sub_page_ranks update\n",rank);
       // somma con colonna costante teleport_probability
       local_sub_page_ranks[i] = sum + teleport_probability;
       
@@ -468,10 +468,10 @@ int main(int argc, char *argv[]){
       if (diff < 0)
         diff = -diff;
 
-      printf("DEBUG: diff %f\n", diff);
+      //printf("DEBUG: diff %f\n", diff);
       // sum to the score_norm
       local_score_norm += diff;
-      printf("DEBUG: local score norm %f\n", local_score_norm);
+      //printf("DEBUG: local score norm %f\n", local_score_norm);
 
       printf("DEBUG: %d end iteration\n",rank);
       // update the round robin index for moving in complete_page_ranks
@@ -479,6 +479,11 @@ int main(int argc, char *argv[]){
 
     }
     
+    for ( int  i = 0;i<rows_num;i+1){
+
+        printf("DEBUG %d// local page rank of my node %d is %f",rank,i,local_sub_page_ranks[i]);
+    }
+
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
 
