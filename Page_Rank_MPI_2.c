@@ -560,7 +560,6 @@ int main(int argc, char *argv[]){
     printf("SCORE NORM A QUSTO GIRO = %f\n",score_norm);
 
       score_norm = 0.0;
-      local_score_norm = 0.0;
       
       complete_page_ranks[n] = iterate;
 
@@ -595,6 +594,7 @@ int main(int argc, char *argv[]){
       iterate = complete_page_ranks[n];
 
     }
+      local_score_norm = 0.0;
 
   }
 
