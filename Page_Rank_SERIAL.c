@@ -199,16 +199,18 @@ int main(){
 
     count++;
 
+    printf("\nscore norm is %0.15f\n",score_norm);
+
   } while (score_norm > ERROR);
 
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
 
-
+/*
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , page_ranks[i]);
   }
-
+*/
   return 0;
 }
