@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   // MASTER CODE : read the input file
   if(rank == MASTER){ 
       
-      printf("DEBUG: MASTER open the file %s\n",filename);
+      //printf("DEBUG: MASTER open the file %s\n",filename);
 
       if ((fp = fopen(filename, "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]){
       ungetc(ch, fp);
 
       // DEBUG: Print the number of nodes and edges, skip everything else
-      printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
+      //printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]){
 
   // Creation of the array for the out_degree of all nodes
   
-  printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
+  //printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
 
   out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
 
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]){
   
   if (rank == MASTER){
     //printf("\n");
-    printf("DEBUG: Master continue to  READ FILE\n");
+    //printf("DEBUG: Master continue to  READ FILE\n");
 
     while (!feof(fp)){
       
@@ -438,7 +438,7 @@ int main(int argc, char *argv[]){
   
     
   iterate = 1;
-  printf("DEBUG: %d Start to iterete\n",rank);
+  //printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
 
@@ -477,7 +477,7 @@ int main(int argc, char *argv[]){
       
       // take the absolute value of the error
 
-      printf("PROCESS %d row %d from %f to %f\n",rank,k,complete_page_ranks[k],local_sub_page_ranks[i]);
+      //printf("PROCESS %d row %d from %f to %f\n",rank,k,complete_page_ranks[k],local_sub_page_ranks[i]);
 
       diff = local_sub_page_ranks[i] - complete_page_ranks[k];
       if (diff < 0)
@@ -487,7 +487,7 @@ int main(int argc, char *argv[]){
       // sum to the score_norm
 
       float temp = local_score_norm + diff;
-      printf("PROCESS %d from %f to %f\n",rank,local_score_norm,temp);
+      //printf("PROCESS %d from %f to %f\n",rank,local_score_norm,temp);
       local_score_norm += diff;
 
       //printf("DEBUG: local score norm %f\n", local_score_norm);
@@ -516,7 +516,7 @@ int main(int argc, char *argv[]){
         
       
       score_norm = local_score_norm;
-      printf("PROCESS %d score norm = %f\n",rank,score_norm);
+      //printf("PROCESS %d score norm = %f\n",rank,score_norm);
       //printf("DEBUG: score norm %f\n", score_norm);
 
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
@@ -611,7 +611,7 @@ int main(int argc, char *argv[]){
       iterate = complete_page_ranks[n];
 
     }
-    printf(" %d end cicle \n",rank);
+    //printf(" %d end cicle \n",rank);
   }
 
   
@@ -620,23 +620,24 @@ int main(int argc, char *argv[]){
 
   MPI_Finalize();
 
-/*
+
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
     
     //printf("DEBUG: %d END PROCESS:\n",rank);
     // Print the results
     
+    /*
     for (int i = 0; i < n; i++){
       printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
     }
-    
+    */
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
     
     //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);
   }
 
-*/
+
 
   return 0;
 
