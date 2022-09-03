@@ -29,8 +29,8 @@ int main(int argc, char *argv[]){
   MPI_Status status;          /* MPI receive routine parameter */
 
   // Variables for input file reading
-  char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
-  //char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+  //char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
+  char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
   FILE *fp;                             /* file pointer */
   char ch;                              /* reads the characters in the file */
   char str[100];                        /* buffer for storing file lines */
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   // MASTER CODE : read the input file
   if(rank == MASTER){ 
       
-      //printf("DEBUG: MASTER open the file %s\n",filename);
+      printf("DEBUG: MASTER open the file %s\n",filename);
 
       if ((fp = fopen(filename, "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]){
       ungetc(ch, fp);
 
       // DEBUG: Print the number of nodes and edges, skip everything else
-      //printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
+      printf("DEBUG MASTER :\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
       // distribuiamo ipotizzando che l'indegree dei nodi è +/- bilanciato
       
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]){
 
   // Creation of the array for the out_degree of all nodes
   
-  //printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
+  printf("DEBUG i'm %d and i'm going to allocate %d column\n",rank,n);
 
   out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
 
@@ -228,7 +228,7 @@ int main(int argc, char *argv[]){
   
   if (rank == MASTER){
     //printf("\n");
-    //printf("DEBUG: Master continue to  READ FILE\n");
+    printf("DEBUG: Master continue to  READ FILE\n");
 
     while (!feof(fp)){
       
@@ -438,7 +438,7 @@ int main(int argc, char *argv[]){
   
     
   iterate = 1;
-  //printf("DEBUG: %d Start to iterete\n",rank);
+  printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
     // qui calcolo la mia parte di lavoro
@@ -600,6 +600,7 @@ int main(int argc, char *argv[]){
       iterate = complete_page_ranks[n];
 
     }
+    printf(" %d end cicle \n",rank);
       local_score_norm = 0.0;
 
   }
@@ -610,7 +611,7 @@ int main(int argc, char *argv[]){
 
   MPI_Finalize();
 
-
+/*
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
     
@@ -626,7 +627,7 @@ int main(int argc, char *argv[]){
     //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);
   }
 
-
+*/
 
   return 0;
 
