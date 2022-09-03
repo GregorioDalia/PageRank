@@ -566,7 +566,7 @@ int main(int argc, char *argv[]){
        // printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       //}
 
-      printf("SCORE NORM IS : %0.15f\n",score_norm);
+      //printf("SCORE NORM IS : %0.15f\n",score_norm);
       
       if(score_norm <= ERROR)  {
         iterate = 0;
