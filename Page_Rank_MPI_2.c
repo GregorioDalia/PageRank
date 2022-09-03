@@ -504,6 +504,9 @@ int main(int argc, char *argv[]){
             MPI_Recv(maxarray,max_rows_num + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
             
             for( int k=0,i= sender_rank; k<max_rows_num  ; i+numtasks,k++){
+
+              printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],maxarray[k]);
+
               complete_page_ranks[i] = maxarray[k];
             }
 
@@ -515,6 +518,9 @@ int main(int argc, char *argv[]){
               MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
               for( int k=0, i= sender_rank; k<min_rows_num ; i+numtasks,k++){
+                
+                printf("SOSTITUISCO %F CON %F\n",complete_page_ranks[i],minarray[k]);
+
                 complete_page_ranks[i] = minarray[k];
               }
 
