@@ -54,6 +54,8 @@ int main(int argc, char *argv[]){
 
   int min_rows_num ;
   int max_rows_num;
+  float* minarray;
+  float* maxarray;
   // Variable for performance measures
   double wallClock_start, wallClock_stop;
   /*long_long papi_Time_start , papi_Time_stop;
@@ -499,9 +501,9 @@ int main(int argc, char *argv[]){
       }
       */
          
-      float* minarray = malloc((min_rows_num+1)*sizeof(float));
+      minarray = malloc((min_rows_num+1) * sizeof(float));
 
-      float* maxarray = malloc((max_rows_num + 1) *sizeof(float));
+      maxarray = malloc((max_rows_num + 1) * sizeof(float));
       
       score_norm = local_score_norm;
       //printf("DEBUG: score norm %f\n", score_norm);
