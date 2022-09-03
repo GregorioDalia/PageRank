@@ -18,8 +18,8 @@ typedef struct Node
 int main(){
 
   // Open the data set
-  char filename[] = "./web-NotreDame.txt";
-  //char filename[] = "./DEMO.txt";
+  //char filename[] = "./web-NotreDame.txt";
+  char filename[] = "./DEMO.txt";
   printf("DEBUG: open the file %s",filename);
 
   FILE *fp;
@@ -210,14 +210,14 @@ int main(){
       float sum = 0.0;
       Node *currNode = sparse_matrix[i];
 
-      do{
+      while (currNode!=NULL){
 
         sum += (old_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
 
 
-      } while (currNode!=NULL);
+      }
 
       // somma con colonna costante mean_coloumn_weighed
       //printf("row %d finalsum = %f\n",i,sum);
@@ -252,10 +252,10 @@ int main(){
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
 
-/*
+
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %f \n", i , page_ranks[i]);
   }
-*/
+
   return 0;
 }

@@ -451,7 +451,7 @@ int main(int argc, char *argv[]){
       Node *currNode = sparse_matrix_local[i];
       //printf("DEBUG: %d currnode allocate\n",rank);
 
-      do{
+      while (currNode!=NULL){
         /*
         printf("DEBUG: %d ?1\n",rank);
         printf("DEBUG: %d currNode->start_node:  %d\n",rank,currNode->start_node);
@@ -467,7 +467,7 @@ int main(int argc, char *argv[]){
         
         currNode = currNode->next;
 
-      } while (currNode!=NULL);
+      } 
 
       //printf("DEBUG: total sum %f\n", sum);
 
