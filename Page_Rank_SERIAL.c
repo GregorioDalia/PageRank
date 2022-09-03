@@ -109,7 +109,7 @@ int main(){
 
   percento = 0;
   m=0;
-  for (int i = 0, c=1; i < n; i++){
+  for (int i = 0; i < n; i++){
 
     m++;
     page_ranks[i] = 1.0 / (float)n;
