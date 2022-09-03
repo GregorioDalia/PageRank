@@ -604,11 +604,11 @@ int main(int argc, char *argv[]){
     
     printf("DEBUG: %d END PROCESS:\n",rank);
     // Print the results
-    /*
+    
     for (int i = 0; i < n; i++){
       printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
     }
-    */
+    
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
     
     //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);

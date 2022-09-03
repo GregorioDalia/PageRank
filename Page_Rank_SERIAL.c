@@ -57,7 +57,7 @@ int main(){
 
   float* page_ranks = malloc(n * sizeof(float));
   float* old_page_ranks = malloc(n * sizeof(float));
-  float* mean_coloumn_weighed = malloc(n * sizeof(float));
+  float mean_coloumn_weighed ;
 
   //Creation of the sparse matrix
   Node ** sparse_matrix = malloc(n * sizeof(Node*));
@@ -114,7 +114,7 @@ int main(){
     m++;
     page_ranks[i] = 1.0 / (float)n;
     old_page_ranks[i] = 1.0 / (float)n;
-    mean_coloumn_weighed[i] = (1 - WEIGHT) / (float)n;
+    //mean_coloumn_weighed[i] = (1 - WEIGHT) / (float)n;
 
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
@@ -122,6 +122,8 @@ int main(){
     }
 
   }
+    mean_coloumn_weighed = (1 - WEIGHT) / (float)n;
+
 
   printf("\nDEBUG: UPDATE MATRIX\n");
 
@@ -183,7 +185,7 @@ int main(){
       } while (j < in_degree[i]);
 
       // somma con colonna costante mean_coloumn_weighed
-      page_ranks[i] = sum + mean_coloumn_weighed[i];
+      page_ranks[i] = sum + mean_coloumn_weighed;
 
       // take the absolute value of the error, using old_page_rank avoiding to create a new variable
       old_page_ranks[i] = page_ranks[i] - old_page_ranks[i];
@@ -195,6 +197,7 @@ int main(){
 
       // reinitialize the old_pagerank value to the current pagerank
       old_page_ranks[i] = page_ranks[i];
+      printf("at row %d old page is %f \n",i,old_page_ranks[i]);
     }
 
     count++;
@@ -207,10 +210,10 @@ int main(){
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
 
-/*
+
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.15f \n", i , page_ranks[i]);
   }
-*/
+
   return 0;
 }
