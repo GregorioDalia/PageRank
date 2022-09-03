@@ -441,6 +441,8 @@ int main(int argc, char *argv[]){
   printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
+
+      local_score_norm = 0;
     // qui calcolo la mia parte di lavoro
     
     for (int i = 0,k=rank; i < rows_num;i++){
@@ -567,7 +569,6 @@ int main(int argc, char *argv[]){
     }
     printf("SCORE NORM A QUSTO GIRO = %f\n",score_norm);
       */
-      score_norm = 0.0;
       
       complete_page_ranks[n] = iterate;
 
@@ -603,8 +604,6 @@ int main(int argc, char *argv[]){
 
     }
     printf(" %d end cicle \n",rank);
-      local_score_norm = 0.0;
-
   }
 
   
