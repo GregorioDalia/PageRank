@@ -567,7 +567,10 @@ int main(int argc, char *argv[]){
                 //send(i, complete_page_ranks);
       }
 
-
+    for (int i = 0; i < n; i++){
+      printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
+    }
+    exit(1);
     }
     // WORKERS send the new page_rank values
     else{
@@ -579,15 +582,16 @@ int main(int argc, char *argv[]){
       MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
        //printf("DEBUG WORKER : COMPLETE PAGE RANKS POST RECEIVE\n");
-      /*for (int i = 0 ; i<n ; i++){
-        //printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+      /*
+      for (int i = 0 ; i<n ; i++){
+        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
       */
+      
       iterate = complete_page_ranks[n];
 
     }
 
-    exit(1);
   }
 
   
