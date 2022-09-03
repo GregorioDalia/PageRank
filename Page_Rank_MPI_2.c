@@ -446,11 +446,15 @@ int main(int argc, char *argv[]){
         printf("DEBUG: %d currNode->value:  %f\n",rank,currNode->value);
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
 
+        printf("DEBUG: partial sum %f\n", sum);
 
         printf("DEBUG: %d ?2\n",rank);
+        
         currNode = currNode->next;
 
       } while (currNode!=NULL);
+
+      printf("DEBUG: total sum %f\n", sum);
 
       printf("DEBUG: %d local_sub_page_ranks update\n",rank);
       // somma con colonna costante teleport_probability
@@ -461,8 +465,10 @@ int main(int argc, char *argv[]){
       if (diff < 0)
         diff = -diff;
 
+      printf("DEBUG: diff %f\n", diff);
       // sum to the score_norm
       local_score_norm += diff;
+      printf("DEBUG: local score norm %f\n", local_score_norm);
 
       printf("DEBUG: %d end iteration\n",rank);
       // update the round robin index for moving in complete_page_ranks
@@ -523,6 +529,7 @@ int main(int argc, char *argv[]){
       float minarray[min_rows_num+1];
       float maxarray[max_rows_num +1];
       score_norm = local_score_norm;
+      printf("DEBUG: score norm %f\n", score_norm);
 
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
