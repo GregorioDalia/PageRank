@@ -556,11 +556,12 @@ int main(int argc, char *argv[]){
       if(score_norm <= ERROR)  {
         iterate = 0;
       }
+      /*
         for (int i = 0; i < n; i++){
       printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
     }
     printf("SCORE NORM A QUSTO GIRO = %f\n",score_norm);
-
+      */
       score_norm = 0.0;
       
       complete_page_ranks[n] = iterate;
