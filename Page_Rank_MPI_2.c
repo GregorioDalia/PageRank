@@ -555,6 +555,8 @@ int main(int argc, char *argv[]){
       //for (int i = 0 ; i<n ; i++){
        // printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       //}
+
+      printf("SCORE NORM IS : %0.15f",score_norm);
       
       if(score_norm <= ERROR)  {
         iterate = 0;
