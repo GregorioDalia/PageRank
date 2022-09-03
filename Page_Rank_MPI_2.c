@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
     
       info[1] = n;
 
-      //printf("DEBUG %d  invio il n nodi ai worker \n",rank);
+      printf("DEBUG %d  invio il n nodi ai worker \n",rank);
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
@@ -281,7 +281,7 @@ int main(int argc, char *argv[]){
 
     // Mettere barrier?
     // Send the out_degree array
-    //printf("DEBUG %d INVIO OUT DEGREE",rank);
+    printf("DEBUG %d INVIO OUT DEGREE",rank);
     for(int i = 1; i < numtasks; i++){
         MPI_Send(out_degree, n, MPI_INT, i, TAG, MPI_COMM_WORLD);
     }
@@ -384,9 +384,9 @@ int main(int argc, char *argv[]){
 
   
   
-  //for (int i = 0; i < n; i++){
-    //printf("DEBUG: %d INITIAL THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
-  //}   
+  for (int i = 0; i < n; i++){
+    printf("DEBUG: %d INITIAL THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
+  }   
 
   // Matrix moltiplication : same code MASTER WORKER
   // receive the score_values from workers      send the score_norm  and result value to MASTER : WORKER
@@ -406,8 +406,8 @@ int main(int argc, char *argv[]){
   //printf("RANK: %d  n: %d   rows_num: %d             \n",rank,n,rows_num);
   //printf("Outdegree: \n");
 
-  //for(int i=0; i<n ;i++)
-    //printf("RANK: %d    i= %d  out_deg= %d\n",rank,i,out_degree[i]);
+  for(int i=0; i<n ;i++)
+    printf("RANK: %d    i= %d  out_deg= %d\n",rank,i,out_degree[i]);
 
   /// 
 
@@ -415,7 +415,7 @@ int main(int argc, char *argv[]){
   for (int i = 0; i < rows_num;i++){
     Node *currNode = sparse_matrix_local[i];
     do{
-        //printf("DEBUG: %d currNode->start_node:  %d  currNode->value:  %f\n",rank,currNode->start_node,currNode->value);
+        printf("DEBUG: %d currNode->start_node:  %d  currNode->value:  %f\n",rank,currNode->start_node,currNode->value);
         currNode = currNode->next;
       } while (currNode!=NULL);
 
