@@ -573,7 +573,7 @@ int main(int argc, char *argv[]){
           k += numtasks;
       }
       
-      printf("DEBUG: COMPLETE PAGE RANKS");
+      printf("DEBUG: COMPLETE PAGE RANKS\n");
       for (int i = 0 ; i<n ; i++){
         printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       }
