@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
     
       info[1] = n;
 
-      printf("DEBUG %d  invio il n nodi ai worker \n",rank);
+      printf("DEBUG %d  invio il %d n nodi ai worker \n",rank,info[1]);
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
@@ -395,50 +395,6 @@ int main(int argc, char *argv[]){
     
   }
 
-  
-  /*
-  for (int i = 0; i < n; i++){
-    printf("DEBUG: %d INITIAL THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
-  }   
-  */
-
-  // Matrix moltiplication : same code MASTER WORKER
-  // receive the score_values from workers      send the score_norm  and result value to MASTER : WORKER
-  // Error valutation : MASTER                  WORKER: wait the message:
-      // TRUE CONDITION :                           receive page rank update 
-      //      send page rank : MASTER               iterate
-      //      iterate
-      // FALSE CONDITION :
-      //      stop iteration and workers
-      //      end
-  
-  //int count = 0;
-
-
-  //sono il master
-  //if(rank == 0)
-  //printf("RANK: %d  n: %d   rows_num: %d             \n",rank,n,rows_num);
-  //printf("Outdegree: \n");
-  /*
-  for(int i=0; i<n ;i++)
-    printf("RANK: %d    i= %d  out_deg= %d\n",rank,i,out_degree[i]);
-  */
-  /// 
-
-/*
-  for (int i = 0; i < rows_num;i++){
-    Node *currNode = sparse_matrix_local[i];
-    do{
-        printf("DEBUG: %d currNode->start_node:  %d  currNode->value:  %f\n",rank,currNode->start_node,currNode->value);
-        currNode = currNode->next;
-      } while (currNode!=NULL);
-
-      //printf("\n");
-  }
-  */
-  ////
-  //return 0;
-  
     
   iterate = 1;
   printf("DEBUG: %d Start to iterete\n",rank);
@@ -454,18 +410,8 @@ int main(int argc, char *argv[]){
       //printf("DEBUG: %d currnode allocate\n",rank);
 
       while (currNode!=NULL){
-        /*
-        printf("DEBUG: %d ?1\n",rank);
-        printf("DEBUG: %d currNode->start_node:  %d\n",rank,currNode->start_node);
-        printf("DEBUG: %d currNode->end_node:  %d\n",rank,currNode->end_node);
-        printf("DEBUG: %d complete_page_ranks[currNode->start_node]n : %f\n",rank,complete_page_ranks[currNode->start_node]);
-        printf("DEBUG: %d currNode->value:  %f\n",rank,currNode->value);
-        */
+
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-
-        //printf("DEBUG: partial sum %f\n", sum);
-
-        //printf("DEBUG: %d ?2\n",rank);
         
         currNode = currNode->next;
 

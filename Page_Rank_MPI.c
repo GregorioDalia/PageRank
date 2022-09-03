@@ -95,7 +95,8 @@ int main(int argc, char *argv[]){
   if(rank == MASTER){ 
       
       //printf("DEBUG: MASTER open the file %s\n",filename);
-
+    char filename[10];
+    strcpy(filename,argv[1]);
       if ((fp = fopen(filename, "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
         exit(1);
