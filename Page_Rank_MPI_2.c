@@ -476,6 +476,9 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error
+
+      printf("PROCESS %d row %d from %f to %f\n",rank,k,complete_page_ranks[k],local_sub_page_ranks[i]);
+
       diff = local_sub_page_ranks[i] - complete_page_ranks[k];
       if (diff < 0)
         diff = -diff;
@@ -563,7 +566,7 @@ int main(int argc, char *argv[]){
        // printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
       //}
 
-      printf("SCORE NORM IS : %0.15f",score_norm);
+      printf("SCORE NORM IS : %0.15f\n",score_norm);
       
       if(score_norm <= ERROR)  {
         iterate = 0;
