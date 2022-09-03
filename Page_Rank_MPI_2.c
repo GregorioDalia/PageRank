@@ -572,6 +572,11 @@ int main(int argc, char *argv[]){
           complete_page_ranks[k]=local_sub_page_ranks[i];
           k += numtasks;
       }
+      
+      printf("DEBUG: COMPLETE PAGE RANKS");
+      for (int i = 0 ; i<n ; i++){
+        printf("Page rank of %d is %0.5f ",i,complete_page_ranks[i]);
+      }
 
       // Send the new old_page_rank value to all worker
       for(int i=1; i<numtasks; i++){
