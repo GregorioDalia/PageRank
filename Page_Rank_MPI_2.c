@@ -29,8 +29,8 @@ int main(int argc, char *argv[]){
   MPI_Status status;          /* MPI receive routine parameter */
 
   // Variables for input file reading
-  //char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
-  char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
+  char filename[] = "./DEMO.txt";    /* file containing the list of the edges */
+  //char filename[] = "./web-NotreDame.txt";    /* file containing the list of the edges */
   FILE *fp;                             /* file pointer */
   char ch;                              /* reads the characters in the file */
   char str[100];                        /* buffer for storing file lines */
@@ -608,7 +608,7 @@ int main(int argc, char *argv[]){
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
     
-    printf("DEBUG: %d END PROCESS:\n",rank);
+    //printf("DEBUG: %d END PROCESS:\n",rank);
     // Print the results
     
     for (int i = 0; i < n; i++){
