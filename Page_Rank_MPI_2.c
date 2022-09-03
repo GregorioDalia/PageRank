@@ -438,17 +438,20 @@ int main(int argc, char *argv[]){
       float sum = 0.0;
       Node *currNode = sparse_matrix_local[i];
       printf("DEBUG: %d currnode allocate\n",rank);
+
       do{
+        /*
         printf("DEBUG: %d ?1\n",rank);
         printf("DEBUG: %d currNode->start_node:  %d\n",rank,currNode->start_node);
         printf("DEBUG: %d currNode->end_node:  %d\n",rank,currNode->end_node);
         printf("DEBUG: %d complete_page_ranks[currNode->start_node]n : %f\n",rank,complete_page_ranks[currNode->start_node]);
         printf("DEBUG: %d currNode->value:  %f\n",rank,currNode->value);
+        */
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
 
-        printf("DEBUG: partial sum %f\n", sum);
+        //printf("DEBUG: partial sum %f\n", sum);
 
-        printf("DEBUG: %d ?2\n",rank);
+        //printf("DEBUG: %d ?2\n",rank);
         
         currNode = currNode->next;
 
@@ -475,56 +478,14 @@ int main(int argc, char *argv[]){
       k += numtasks;
 
     }
-
-    //FINE LAVORO LOCALE
-
-
-    // Map-Reduce for the calculation
-    //reduce ( score_norm,0);
-    
-    //printf("DEBUG %d: REDUCE \n",rank);
-    //MPI_Barrier(MPI_COMM_WORLD);
-
-    //printf("DEBUG: %d local error= %f ; scorenorm totale = %f\n",rank,local_score_norm,score_norm);
-
-
-    /*
-
-    if(rank == MASTER){
-      
-      float sing_scor;
-      score_norm = local_score_norm;
-
-      for(int i = 1; i<numtasks ; i++){
-        MPI_Recv(&sing_scor, 1, MPI_FLOAT, i, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-        //printf("DEBUG: %d RECEIVE sing_scor= %f from proc rank = %d\n",rank,sing_scor,i);
-        score_norm += sing_scor;
-      }
-
-      //printf("DEBUG: %d local error= %f ; scorenorm totale = %f\n",rank,local_score_norm,score_norm);
-    }else{
-
-      //printf("DEBUG: %d SEND local error= %f \n",rank,local_score_norm);
-      MPI_Send(&local_score_norm, 1, MPI_FLOAT, MASTER, TAG, MPI_COMM_WORLD);
-    }
-
-
-    */
-
-
-    //MPI_Reduce(&local_score_norm, &score_norm, 1, MPI_FLOAT, MPI_SUM, 0,
-    //       MPI_COMM_WORLD);
-    
-    
-    //score_norm=local_score_norm;
-    //local_score_norm = 0;
-  
-    
-  
-   
     
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
+
+       printf("DEBUG: COMPLETE PAGE RANKS +PRE+ RECEIVE\n");
+      for (int i = 0 ; i<n ; i++){
+        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+      }
          
       float minarray[min_rows_num+1];
       float maxarray[max_rows_num +1];
@@ -557,6 +518,17 @@ int main(int argc, char *argv[]){
           }
       } 
 
+
+      for (int i = 0,k = 0 ; i<rows_num;i++){
+          
+          complete_page_ranks[k]=local_sub_page_ranks[i];
+          k += numtasks;
+      }
+      
+      printf("DEBUG: COMPLETE PAGE RANKS POST RECEIVE\n");
+      for (int i = 0 ; i<n ; i++){
+        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+      }
       
       if(score_norm <= ERROR)  {
         iterate = 0;
@@ -567,68 +539,12 @@ int main(int argc, char *argv[]){
       
       complete_page_ranks[n] = iterate;
 
-      for (int i = 0,k = 0 ; i<rows_num;i++){
-          
-          complete_page_ranks[k]=local_sub_page_ranks[i];
-          k += numtasks;
-      }
-      
-      printf("DEBUG: COMPLETE PAGE RANKS\n");
-      for (int i = 0 ; i<n ; i++){
-        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
-      }
 
       // Send the new old_page_rank value to all worker
       for(int i=1; i<numtasks; i++){
         MPI_Send(complete_page_ranks, n+1, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
                 //send(i, complete_page_ranks);
       }
-
-      // Receive the new page rank values from the workers  
-      /*for (int i=0,x=0,sender_rank=0;i < n; i++){
-        
-        if(sender_rank != MASTER){
-
-          MPI_Recv(&newElem, 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-
-          complete_page_ranks[i]=newElem;
-        }
-        else{
-          // Update from local value of the MASTER  
-          complete_page_ranks[i]=local_sub_page_ranks[x];
-          x++;
-        }
-        
-        sender_rank++;
-        if (sender_rank==numtasks) sender_rank=0;
-
-      }*/
-      //for(int i=0; i<n; i++)
-        //printf("DEBUG: %d complete_page_ranks[%d] : %f \n",rank,i,complete_page_ranks[i]);
-
-      // Evaluate the Error condition for end the iteration
-      //printf("scor norm %f",score_norm);
-
-      /*if(score_norm <= ERROR)  {
-        iterate = 0;
-      }
-      //iterate ++;
-
-      score_norm = 0.0;
-      local_score_norm = 0.0;
-      
-      // Send the new old_page_rank value to all worker
-      for(int i=1; i<numtasks; i++){
-        
-        MPI_Send(&iterate, 1, MPI_INT, i, TAG, MPI_COMM_WORLD);
-
-        //send (iterate);
-        if(iterate)   
-                MPI_Send(complete_page_ranks, n, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
-
-                //send(i, complete_page_ranks);
-      }*/
-      
 
 
     }
@@ -640,43 +556,17 @@ int main(int argc, char *argv[]){
       MPI_Send(local_sub_page_ranks, rows_num+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
 
       MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
+       printf("DEBUG WORKER : COMPLETE PAGE RANKS POST RECEIVE\n");
+      for (int i = 0 ; i<n ; i++){
+        printf("Page rank of %d is %0.5f\n ",i,complete_page_ranks[i]);
+      }
       
       iterate = complete_page_ranks[n];
-      /*
-      local_score_norm = 0.0;
-      
-      // Send the update values of page_rank
-      for(int i=0; i < rows_num; i++){
-            float pagerank_value =local_sub_page_ranks[i];
-            MPI_Send(&pagerank_value,1 , MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);
 
-               //send(0, local_page_ranks[i]);
-      }
-      */
-      //printf("DEBUG: %d 1\n",rank);
-
-      // Receive iterate: check wether continue or not
-      //receive(0, iterate);
-      /*
-      MPI_Recv(&iterate, 1, MPI_INT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-
-      //printf("DEBUG: %d 2\n",rank);
-      
-      // Receive the old_page_rank update
-      if(iterate){
-        //receive(0, complete_page_ranks);
-          MPI_Recv(complete_page_ranks, n, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-
-      }
-      */
-      
-      //printf("DEBUG: %d 3\n",rank);
-      // Print the results
-      //for (int i = 0; i < n; i++){
-        //printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.15f \n",rank, i , complete_page_ranks[i]);
-      //}
-      //printf("DEBUG: %d 4\n",rank);
     }
+
+    exit(0);
 
   }
 
