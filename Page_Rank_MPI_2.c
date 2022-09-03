@@ -432,7 +432,7 @@ int main(int argc, char *argv[]){
   
     
   iterate = 1;
-  printf("DEBUG: %d Start to iterete\n",rank);
+  //printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
     // qui calcolo la mia parte di lavoro
@@ -477,7 +477,7 @@ int main(int argc, char *argv[]){
       local_score_norm += diff;
       //printf("DEBUG: local score norm %f\n", local_score_norm);
 
-      printf("DEBUG: %d end iteration\n",rank);
+      //printf("DEBUG: %d end iteration\n",rank);
       // update the round robin index for moving in complete_page_ranks
       k += numtasks;
 
@@ -502,7 +502,7 @@ int main(int argc, char *argv[]){
       float minarray[min_rows_num+1];
       float maxarray[max_rows_num +1];
       score_norm = local_score_norm;
-      printf("DEBUG: score norm %f\n", score_norm);
+      //printf("DEBUG: score norm %f\n", score_norm);
 
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
@@ -587,7 +587,6 @@ int main(int argc, char *argv[]){
 
     }
 
-    exit(0);
 
   }
 
