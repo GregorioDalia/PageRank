@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
       while (ch == '#'){
         fgets(str, 100 - 1, fp);
         // Debug: print title of the data set
-        printf("%s", str);
+        //printf("%s", str);
         sscanf(str, "%*s %d %*s %d", &n, &e); // number of nodes and edges
         ch = getc(fp);
       }
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]){
     
       info[1] = n;
 
-      printf("DEBUG %d  invio il %d n nodi ai worker \n",rank,info[1]);
+      //printf("DEBUG %d  invio il %d n nodi ai worker \n",rank,info[1]);
 
       //Prendo il wall clock time
 		  //papi_Time_start = PAPI_get_real_usec();
@@ -182,7 +182,7 @@ int main(int argc, char *argv[]){
         rows_num = min_rows_num;
       }
 
-      printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
+      //printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
       sparse_matrix_local = malloc(rows_num * sizeof(Node *));
       for (int k = 0; k < rows_num; k++){
@@ -204,7 +204,7 @@ int main(int argc, char *argv[]){
     
     n = info[1];
     
-    printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
+    //printf("DEBUG: WORKER %d RECEIVED %d rows  and %d as n\n",rank,info[0],info[1]);
 
     
     for (int k = 0; k < rows_num; k++){
@@ -229,7 +229,7 @@ int main(int argc, char *argv[]){
   //Creation of the sparse matrix
   //Node *sparse_matrix[n]; DA CANCELLARE
 
-  printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
+  //printf("DEBUG:%d INITIALIZATION of outdegree \n",rank);
   for (int k = 0; k < n; k++){
     //in_degree[k] = 0; DA CANCELLARE
     out_degree[k] = 0;
@@ -379,7 +379,7 @@ int main(int argc, char *argv[]){
  
 
 
-  printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
+  //printf("DEBUG: %d INITIALIZE PAGE RANKS TO 1/N and UPDATE MATRIX\n",rank);
   if(rank==MASTER)
     MPItime_start = MPI_Wtime();
 
@@ -412,7 +412,7 @@ int main(int argc, char *argv[]){
 
     
   iterate = 1;
-  printf("DEBUG: %d Start to iterete\n",rank);
+  //printf("DEBUG: %d Start to iterete\n",rank);
   while(iterate ){
 
       local_score_norm = 0;
@@ -550,7 +550,7 @@ int main(int argc, char *argv[]){
                 //send(i, complete_page_ranks);
       }
 
-     printf("GIRO con + %0.50f\n",score_norm);
+     //printf("GIRO con + %0.50f\n",score_norm);
 
 
     //exit(1);
@@ -593,10 +593,10 @@ int main(int argc, char *argv[]){
     // Print the results
     
     
-    for (int i = 0; i < n; i++){
+    /*for (int i = 0; i < n; i++){
       printf("DEBUG: %d THE PAGE RANK OF NODE %d IS : %0.50f \n",rank, i , complete_page_ranks[i]);
     }
-    
+    */
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
     
     //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);
