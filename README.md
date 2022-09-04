@@ -14,3 +14,9 @@ https://www.youtube.com/watch?v=E9aoTVmQvok&list=PLLssT5z_DsK9JDLcT8T62VtzwyW9LN
 for more info.
 
 #Page_Rank_MPI.c = a parallel implementation using MPI library; we choose a master/worker architetture to distribuite the load
+                    // THIS IS A NOT PERFORMANCE SOLUTION TOO MANY MESSAGE
+                
+#Page_Rank_MPI_2.c =a parallel implementation using MPI library; we choose a master/worker architetture to distribuite the load
+                    OMPTIMIZED VERSION
+
+how to run : main expect 2 arguments, the name of the file "./WEB.txt" in our case and the ID of the 1 node ( 0 or 1 )
