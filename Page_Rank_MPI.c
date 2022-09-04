@@ -140,16 +140,15 @@ int main(int argc, char *argv[]){
           info[0] = rows_num + 1;
           //printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
 
-          MPI_Send(info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
-
         }
         else{
           info[0] = rows_num;
           //printf("DEBUG: MASTER SEND NROW %d AND N TO WORKER %d\n",info[0],i);
 
-          MPI_Send(info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
+          
 
         }
+        MPI_Send(info, 2, MPI_INT, i, TAG, MPI_COMM_WORLD);
       }
 
 
@@ -170,8 +169,8 @@ int main(int argc, char *argv[]){
   // WORKER : receive the values of the edges
   else{
        
-    
-    MPI_Recv(&info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
+    // Il messaggio ricevuto deve essere &info o info?
+    MPI_Recv(info, 2, MPI_INT, MASTER, TAG, MPI_COMM_WORLD,
                     &status);
     rows_num = info[0];
 
@@ -268,7 +267,7 @@ int main(int argc, char *argv[]){
       //}
     //}
 
-    // Send the edges
+    // Tells to workers that they have received all the edges they have to manage
     info[0] = -1;
     info[1] = -1;
     for(int i = 1; i < numtasks; i++){
@@ -425,8 +424,8 @@ int main(int argc, char *argv[]){
   while(iterate ){
 
     // qui calcolo la mia parte di lavoro
-    
-    for (int i = 0,k=rank; i < rows_num;i++){
+    int k=rank;
+    for (int i = 0; i < rows_num;i++){
 
       float sum = 0.0;
       Node *currNode = sparse_matrix_local[i];
@@ -509,7 +508,7 @@ int main(int argc, char *argv[]){
       
       float newElem;
       // Receive the new page rank values from the workers  
-      for (int i=0,x=0,sender_rank=0;i < n; i++){
+      for (int i=0,sender_rank=0;i < n; i++){
         
         if(sender_rank != MASTER){
 
