@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+#include<string.h>
 //#include <papi.h>
 
 // to handle the sparse matrix
@@ -522,7 +523,7 @@ int main(int argc, char *argv[]){
       
       float newElem;
       // Receive the new page rank values from the workers  
-      for (int i=0,sender_rank=0;i < n; i++){
+      for (int i=0,x=0,sender_rank=0;i < n; i++){
         
         if(sender_rank != MASTER){
 
