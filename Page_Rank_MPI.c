@@ -60,6 +60,8 @@ int main(int argc, char *argv[]){
 	int EventSet = PAPI_NULL;*/
 
   double MPItime_start,MPItime_end;
+  int firstnode;
+
   
   
   //inizializzo la libreria PAPI
@@ -94,10 +96,18 @@ int main(int argc, char *argv[]){
   // MASTER CODE : read the input file
   if(rank == MASTER){ 
       
-      //printf("DEBUG: MASTER open the file %s\n",filename);
-    char filename[10];
-    strcpy(filename,argv[1]);
-      if ((fp = fopen(filename, "r")) == NULL){
+        if(strcmp("0",argv[2]) == 0)firstnode = 0;
+        else if (strcmp("1",argv[2]) == 0)firstnode = 1;
+        else firstnode = -1;
+
+        if(firstnode == -1){
+          printf("INVALID ARGUMENT %s  %s \n",argv[1],argv[2]);
+          exit(1);
+        }
+
+      printf("DEBUG: MASTER open the file %s\n",argv[1]);
+
+      if ((fp = fopen(argv[1], "r")) == NULL){
         //fprintf(stderr, "[Error] cannot open file");
         exit(1);
       }
@@ -219,8 +229,12 @@ int main(int argc, char *argv[]){
 
     while (!feof(fp)){
       
-      fscanf(fp, "%d%d", &fromnode, &tonode);
       
+      fscanf(fp, "%d%d", &fromnode, &tonode);
+        if(firstnode == 1){
+        fromnode=fromnode -1 ;
+        tonode=tonode-1;
+        }      
       info[0] = fromnode;
       info[1] = tonode;
       int dest = tonode % numtasks; // numtasks numero processi

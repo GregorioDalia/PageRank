@@ -21,16 +21,33 @@ int main(int argc, char *argv[]){
   // Open the data set
   //char filename[] = "./web-NotreDame.txt";
   //char filename[] = "./DEMO.txt";
+  /*
   char filename[10];
   strcpy(filename,argv[1]);
 
-  printf("DEBUG: open the file %s",filename);
+  char firstnode[1];
+  strcpy(firstnode,argv[2]);
+
+  printf("value %s and %s\n",argv[1],argv[2]);
+  */
+  int firstnode;
+
+  if(strcmp("0",argv[2]) == 0)firstnode = 0;
+  else if (strcmp("1",argv[2]) == 0)firstnode = 1;
+  else firstnode = -1;
+
+  if(firstnode == -1){
+      printf("INVALID ARGUMENT %s  %s \n",argv[1],argv[2]);
+    exit(1);
+  }
+
+  printf("DEBUG: open the file %s",argv[1]);
 
   FILE *fp;
   int n,e;
   // n: number of nodes   e: number of edges
 
-  if ((fp = fopen(filename, "r")) == NULL){
+  if ((fp = fopen(argv[1], "r")) == NULL){
     fprintf(stderr, "[Error] cannot open file");
     exit(1);
   }
@@ -39,6 +56,7 @@ int main(int argc, char *argv[]){
   char ch;
   char str[100];
   ch = getc(fp);
+
 
   while (ch == '#'){
     fgets(str, 100 - 1, fp);
@@ -86,7 +104,7 @@ int main(int argc, char *argv[]){
 
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
-    if(argv[2] == 1){
+    if(firstnode == 1){
     fromnode=fromnode -1 ;
     tonode=tonode-1;
     }
