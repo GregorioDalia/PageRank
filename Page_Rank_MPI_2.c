@@ -184,7 +184,7 @@ int main(int argc, char *argv[]){
 
       printf("DEBUG: MASTER HAS %d ROW\n",rows_num);
 
-      sparse_matrix_local = malloc(rows_num * sizeof(Node ));
+      sparse_matrix_local = malloc(rows_num * sizeof(Node *));
       for (int k = 0; k < rows_num; k++){
           sparse_matrix_local[k] = NULL;
       }
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]){
                     &status);
     rows_num = info[0];
 
-    sparse_matrix_local = malloc(rows_num * sizeof(Node )); 
+    sparse_matrix_local = malloc(rows_num * sizeof(Node *)); 
     
     n = info[1];
     
@@ -220,10 +220,10 @@ int main(int argc, char *argv[]){
   out_degree = malloc(n * sizeof(int)); // Lo fanno tutti, master e workers
 
   // Creation of the sub page_ranks vector for a process
-  local_sub_page_ranks = malloc(rows_num + 1 * sizeof(float));
+  local_sub_page_ranks = malloc((rows_num + 1) * sizeof(float));
   
   // Creation of the complete page_ranks vector
-  complete_page_ranks = malloc(n+1 * sizeof(float)); // versione mpi
+  complete_page_ranks = malloc((n+1) * sizeof(float)); // versione mpi
   
 
   //Creation of the sparse matrix
@@ -265,7 +265,7 @@ int main(int argc, char *argv[]){
       }
       else{
 
-        Node * NuovoArco =  malloc(sizeof(Node));
+        Node * NuovoArco =  (struct Node *)malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
@@ -329,7 +329,7 @@ int main(int argc, char *argv[]){
         fromnode = info[0];
         tonode = info[1];
  
-        Node * NuovoArco = malloc(sizeof(Node));
+        Node * NuovoArco =(struct Node *) malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
