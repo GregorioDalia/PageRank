@@ -349,7 +349,7 @@ int main(int argc, char *argv[]){
           teleport_probability += maxarray[max_rows_num + 1 ];        
         }else{
 
-          MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+          MPI_Recv(minarray,min_rows_num+2, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
 
           for( int k=0, i= sender_rank; k<min_rows_num ; k++){
             complete_page_ranks[i] = minarray[k];
