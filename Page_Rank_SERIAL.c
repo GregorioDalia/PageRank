@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
+#include<time.h> 
 
 // to handle the sparse matrix
 typedef struct Node
@@ -31,20 +32,34 @@ int main(int argc, char *argv[]){
   printf("value %s and %s\n",argv[1],argv[2]);
   */
   int firstnode;
+  int n,e;
+  
+  int fromnode, tonode;
+  float mean_coloumn_weighed ;
+  float score_norm;
+
+  char ch;
+  char str[100];
+  FILE *fp;
+
+  clock_t start, end;
+  double cpu_time_used;
+
+
+
 
   if(strcmp("0",argv[2]) == 0)firstnode = 0;
-  else if (strcmp("1",argv[2]) == 0)firstnode = 1;
-  else firstnode = -1;
+    else if (strcmp("1",argv[2]) == 0)firstnode = 1;
+      else firstnode = -1;
 
   if(firstnode == -1){
-      printf("INVALID ARGUMENT %s  %s \n",argv[1],argv[2]);
+    printf("INVALID ARGUMENT %s  %s \n",argv[1],argv[2]);
     exit(1);
   }
 
   printf("DEBUG: open the file %s",argv[1]);
 
-  FILE *fp;
-  int n,e;
+  
   // n: number of nodes   e: number of edges
 
   if ((fp = fopen(argv[1], "r")) == NULL){
@@ -53,15 +68,13 @@ int main(int argc, char *argv[]){
   }
 
   // Read the data set and get the number of nodes (n) and edges (e)
-  char ch;
-  char str[100];
   ch = getc(fp);
 
 
   while (ch == '#'){
     fgets(str, 100 - 1, fp);
     // Debug: print title of the data set
-    printf("%s", str);
+    //printf("%s", str);
     sscanf(str, "%*s %d %*s %d", &n, &e); // number of nodes
     ch = getc(fp);
   }
@@ -69,22 +82,22 @@ int main(int argc, char *argv[]){
   ungetc(ch, fp);
 
   // DEBUG: Print the number of nodes and edges, skip everything else
-  printf("DEBUG:\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
+  //printf("DEBUG:\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
   // Creation of the matrix from the file and count of outdegree and indregree of all nodes
-  int fromnode, tonode;
+  
 
   int* in_degree = malloc(n * sizeof(int));
   int* out_degree = malloc(n * sizeof(int));
 
   float* page_ranks = malloc(n * sizeof(float));
   float* old_page_ranks = malloc(n * sizeof(float));
-  float mean_coloumn_weighed ;
+  
 
   //Creation of the sparse matrix
   Node ** sparse_matrix = malloc(n * sizeof(Node*));
 
-  printf("DEBUG: INITIALIZATION\n");
+  //printf("DEBUG: INITIALIZATION\n");
   for (int k = 0; k < n; k++){
     in_degree[k] = 0;
     out_degree[k] = 0;
@@ -92,8 +105,8 @@ int main(int argc, char *argv[]){
   }
 
 
-  printf("\n");
-  printf("DEBUG: READ FILE\n");
+  //printf("\n");
+  //printf("DEBUG: READ FILE\n");
 
   int percento = 0;
   int m = 0;
@@ -105,14 +118,14 @@ int main(int argc, char *argv[]){
     fscanf(fp, "%d%d", &fromnode, &tonode);
 
     if(firstnode == 1){
-    fromnode=fromnode -1 ;
-    tonode=tonode-1;
+      fromnode=fromnode -1 ;
+      tonode=tonode-1;
     }
 
 
     if(e>=100 && ((m%(e/10)) == 0)){
         percento +=10;
-        printf("%d%% ",percento);
+        //printf("%d%% ",percento);
     }
 
     Node* NuovoArco = malloc(sizeof(Node));
@@ -148,7 +161,7 @@ int main(int argc, char *argv[]){
   */
 
 
-  printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
+  //printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
 
   percento = 0;
   m=0;
@@ -161,14 +174,14 @@ int main(int argc, char *argv[]){
 
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
-        printf("%d%% ",percento);
+        //printf("%d%% ",percento);
     }
 
   }
     mean_coloumn_weighed = (1 - WEIGHT) / (float)n;
 
 
-  printf("\nDEBUG: UPDATE MATRIX\n");
+  //printf("\nDEBUG: UPDATE MATRIX\n");
 
   percento = 0;
   m=0;
@@ -181,7 +194,7 @@ int main(int argc, char *argv[]){
 
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
-        printf("%d%% ",percento);
+        //printf("%d%% ",percento);
     }
 
     // Update the value of the pointer
@@ -210,11 +223,15 @@ int main(int argc, char *argv[]){
   */
 
 
-  float score_norm;
+
+  // Measure time from now
+  start = clock();
+
+  
   int count = 0;
 
   do{
-    printf("\nDEBUG: GIRO N: %d\n", count + 1);
+    //printf("\nDEBUG: GIRO N: %d\n", count + 1);
     score_norm = 0.0;
 
     /*
@@ -232,7 +249,7 @@ int main(int argc, char *argv[]){
 
       if(n>=100 && ((m%(n/10)) == 0)){
           percento +=10;
-          printf("%d%% ",percento);
+          //printf("%d%% ",percento);
       }
 
       float sum = 0.0;
@@ -272,10 +289,11 @@ int main(int argc, char *argv[]){
     }
     count++;
 
-    printf("score norm is %0.50f\n",score_norm);
+    //printf("score norm is %0.50f\n",score_norm);
 
   } while (score_norm > ERROR);
 
+  /*
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
@@ -283,7 +301,12 @@ int main(int argc, char *argv[]){
 
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.50f \n", i , page_ranks[i]);
-  }
+  }*/
+
+  end = clock();
+  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+
+  printf ("Tempo di esecuzione (secondi): %f\n", cpu_time_used);
 
   return 0;
 }
