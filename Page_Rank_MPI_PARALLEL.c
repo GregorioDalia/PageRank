@@ -128,9 +128,9 @@ int main(int argc, char *argv[]){
     min_rows_num = n/numtasks;
     max_rows_num = min_rows_num + 1;
     
-    minarray = malloc((min_rows_num + 1) * sizeof(float));
+    minarray = malloc((min_rows_num + 2) * sizeof(float));
 
-    maxarray = malloc((max_rows_num + 1) * sizeof(float));
+    maxarray = malloc((max_rows_num + 2) * sizeof(float));
 
     remaining_rows = n%numtasks;
     
@@ -302,7 +302,7 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
   while(iterate ){
-
+    teleport_probability = 0;
     local_score_norm = 0;
     
     for (int i = 0,k=rank; i < rows_num;i++){
@@ -314,7 +314,8 @@ int main(int argc, char *argv[]){
         currNode = currNode->next;
       } 
 
-      local_sub_page_ranks[i] = sum + teleport_probability;
+      local_sub_page_ranks[i] = sum ;
+      teleport_probability += local_sub_page_ranks[i];
       
       // take the absolute value of the error
       diff = local_sub_page_ranks[i] - complete_page_ranks[k];
@@ -338,14 +339,14 @@ int main(int argc, char *argv[]){
 
         if(sender_rank < remaining_rows){     
                 
-          MPI_Recv(maxarray,max_rows_num + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+          MPI_Recv(maxarray,max_rows_num + 2, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
           
           for( int k=0,i= sender_rank; k<max_rows_num  ; k++){
             complete_page_ranks[i] = maxarray[k];
             i=i+numtasks;
           }
           score_norm += maxarray[max_rows_num];
-        
+          teleport_probability += maxarray[max_rows_num + 1 ];        
         }else{
 
           MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
@@ -356,6 +357,8 @@ int main(int argc, char *argv[]){
           }
 
           score_norm += minarray[min_rows_num];
+          teleport_probability += minarray[max_rows_num + 1 ];        
+
         }
       } 
 
@@ -369,7 +372,9 @@ int main(int argc, char *argv[]){
       }
       
       complete_page_ranks[n] = iterate;
-
+      for (int i = 0 ;i <n ;i++){
+        complete_page_ranks[i]=complete_page_ranks[i]+teleport_probability;
+      }
       // Send the new old_page_rank value to all worker
       for(int i=1; i<numtasks; i++){
         MPI_Send(complete_page_ranks, n+1, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
@@ -379,8 +384,10 @@ int main(int argc, char *argv[]){
     else{
 
       local_sub_page_ranks[rows_num]=local_score_norm;
+      local_sub_page_ranks[rows_num + 1 ]=teleport_probability;
+
       
-      MPI_Send(local_sub_page_ranks, rows_num+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
+      MPI_Send(local_sub_page_ranks, rows_num+2, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
 
       MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
       
@@ -395,6 +402,10 @@ MPItime_end = MPI_Wtime();
 
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
+
+    for (int i = 0; i<n;i++){
+      printf("Page Rank of Node %d is %f \n",i,complete_page_ranks[i]);
+    }
     
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
     
