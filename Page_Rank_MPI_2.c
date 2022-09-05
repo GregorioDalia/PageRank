@@ -12,10 +12,10 @@ typedef struct Node
   struct Node *next;
 } Node;
 
-#define WEIGHT 0.85  // Real in (0, 1), best at 0.85
-#define ERROR 0.0001 // Real in (0, +inf), best at 0.0001
-#define MASTER 0    // Rank of the master process
-#define TAG 0       /* MPI message tag parameter */
+#define WEIGHT 0.85     // Real in (0, 1), best at 0.85
+#define ERROR 0.00001   // Real in (0, +inf), best at 0.00001
+#define MASTER 0        // Rank of the master process
+#define TAG 0           /* MPI message tag parameter */
 
 
 int main(int argc, char *argv[]){
