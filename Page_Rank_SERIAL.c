@@ -297,11 +297,11 @@ int main(int argc, char *argv[]){
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
 
-
+/*
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.50f \n", i , page_ranks[i]);
   }
-
+*/
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
