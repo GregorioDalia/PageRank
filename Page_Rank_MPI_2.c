@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include<string.h>
 #include <mpi.h>
-//#include <papi.h>
+#include <papi.h>
 
 typedef struct Node
 {
@@ -57,9 +57,12 @@ int main(int argc, char *argv[]){
 
   // Variable for performance measures
   double wallClock_start, wallClock_stop;
-  /*long_long papi_Time_start , papi_Time_stop;
+  /*long_long papi_Time_start , papi_Time_stop;*/
   long_long countCacheMiss;
-	int EventSet = PAPI_NULL;*/
+	int EventSet = PAPI_NULL;
+
+  int EventSet = PAPI_NULL
+
 
   double MPItime_start,MPItime_end;
   int firstnode;
@@ -67,23 +70,23 @@ int main(int argc, char *argv[]){
 
 
   //inizializzo la libreria PAPI
-  //if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
-  //  printf("Errore init PAPi\n");
-  //  exit(1);
-  //}
+  if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
+    printf("Errore init PAPi\n");
+    exit(1);
+  }
 
   // creo un EvntSet per PAPI
-  //if (PAPI_create_eventset(&EventSet) != PAPI_OK) {
-  //  printf("Errore creazione eventset PAPi\n");
-  //  exit(1);
-  //}
+  if (PAPI_create_eventset(&EventSet) != PAPI_OK) {
+    printf("Errore creazione eventset PAPi\n");
+    exit(1);
+  }
 
 		//EventSet -- intero per un set di eventi (PAPI_create_eventset)
 		//EventCode -- un evento definito (cache miss di L2)
-  //if (PAPI_add_event(EventSet,PAPI_L2_TCM) != PAPI_OK){
-  //  	printf("Errore nell'aggiunta dell'evento\n");
-  //  	exit(1);
-  //}
+  if (PAPI_add_event(EventSet,PAPI_L2_TCM) != PAPI_OK){
+    	printf("Errore nell'aggiunta dell'evento\n");
+    	exit(1);
+  }
 
   // MPI initialization
   MPI_Init(&argc,&argv);
@@ -389,6 +392,13 @@ int main(int argc, char *argv[]){
   }
 
   MPItime_end = MPI_Wtime();
+
+  if (PAPI_stop(EventSet,&countCacheMiss) != PAPI_OK){
+		printf("Errore in stop e store del contatore\n");
+		exit(1);
+	}
+//tutti i processi stampano i propri cache miss e attendono sulla barriera
+	printf ("Sono il rank %d, questi sono i miei cache miss=%d\n",rank,countCacheMiss);
 
   MPI_Finalize();
 
