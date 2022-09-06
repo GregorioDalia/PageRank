@@ -63,6 +63,8 @@ int main(int argc, char *argv[]){
 
   double MPItime_start,MPItime_end;
   int firstnode;
+      int count = 0;
+
 
   //inizializzo la libreria PAPI
   //if (PAPI_library_init(PAPI_VER_CURRENT) != PAPI_VER_CURRENT) {
@@ -296,7 +298,9 @@ int main(int argc, char *argv[]){
 
     
   iterate = 1;
+
   while(iterate ){
+    if(rank==MASTER)count++;
 
     local_score_norm = 0;
     
@@ -384,13 +388,13 @@ int main(int argc, char *argv[]){
 
   }
 
-MPItime_end = MPI_Wtime();
+  MPItime_end = MPI_Wtime();
 
   MPI_Finalize();
 
   if(rank == MASTER){
     //papi_Time_stop = PAPI_get_real_usec();
-    
+    printf("%d iterazioni \n ",count);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
     
     //printf ("Tempo di esecuzione PAPI (microsecondi): %d\n",papi_Time_stop - papi_Time_start);

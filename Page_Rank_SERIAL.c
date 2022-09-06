@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
-#include<time.h> 
+#include<time.h>
 
 // to handle the sparse matrix
 typedef struct Node
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
   */
   int firstnode;
   int n,e;
-  
+
   int fromnode, tonode;
   float mean_coloumn_weighed ;
   float score_norm;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 
   printf("DEBUG: open the file %s",argv[1]);
 
-  
+
   // n: number of nodes   e: number of edges
 
   if ((fp = fopen(argv[1], "r")) == NULL){
@@ -85,14 +85,14 @@ int main(int argc, char *argv[]){
   //printf("DEBUG:\nGraph data:\n\n  Nodes: %d, Edges: %d \n\n", n, e);
 
   // Creation of the matrix from the file and count of outdegree and indregree of all nodes
-  
+
 
   int* in_degree = malloc(n * sizeof(int));
   int* out_degree = malloc(n * sizeof(int));
 
   float* page_ranks = malloc(n * sizeof(float));
   float* old_page_ranks = malloc(n * sizeof(float));
-  
+
 
   //Creation of the sparse matrix
   Node ** sparse_matrix = malloc(n * sizeof(Node*));
@@ -227,7 +227,7 @@ int main(int argc, char *argv[]){
   // Measure time from now
   start = clock();
 
-  
+
   int count = 0;
 
   do{
@@ -293,7 +293,6 @@ int main(int argc, char *argv[]){
 
   } while (score_norm > ERROR);
 
-  /*
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
@@ -301,7 +300,7 @@ int main(int argc, char *argv[]){
 
   for (int i = 0; i < n; i++){
     printf("THE PAGE RANKE OF NODE %d IS : %0.50f \n", i , page_ranks[i]);
-  }*/
+  }
 
   end = clock();
   cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
