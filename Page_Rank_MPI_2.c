@@ -211,7 +211,7 @@ int main(int argc, char *argv[]){
         MPI_Send(info, 2, MPI_INT, dest, TAG, MPI_COMM_WORLD);
       }
       else{
-        Node * NuovoArco =  (struct Node *)malloc(sizeof(Node));
+        Node * NuovoArco =  malloc(sizeof(Node));
         NuovoArco->start_node = fromnode;
         NuovoArco->end_node = tonode;
         NuovoArco->value = 1;
@@ -251,7 +251,7 @@ int main(int argc, char *argv[]){
       fromnode = info[0];
       tonode = info[1];
 
-      Node * NuovoArco =(struct Node *) malloc(sizeof(Node));
+      Node * NuovoArco =  malloc(sizeof(Node));
       NuovoArco->start_node = fromnode;
       NuovoArco->end_node = tonode;
       NuovoArco->value = 1;
