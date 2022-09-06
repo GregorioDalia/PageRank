@@ -86,6 +86,8 @@ int main(int argc, char *argv[]){
     	exit(1);
   }
 
+
+
   // MPI initialization
   MPI_Init(&argc,&argv);
   MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
@@ -276,6 +278,10 @@ int main(int argc, char *argv[]){
   if(rank==MASTER){
     MPItime_start = MPI_Wtime();
   }
+    if (PAPI_start(EventSet) != PAPI_OK){
+		printf("Errore nell'avvio del conteggio\n");
+		exit(1);
+	}
     
 
   teleport_probability = (1 - WEIGHT) / (float)n;
