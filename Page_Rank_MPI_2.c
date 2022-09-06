@@ -278,10 +278,7 @@ int main(int argc, char *argv[]){
   if(rank==MASTER){
     MPItime_start = MPI_Wtime();
   }
-    if (PAPI_start(EventSet) != PAPI_OK){
-		printf("Errore nell'avvio del conteggio\n");
-		exit(1);
-	}
+ 
     
 
   teleport_probability = (1 - WEIGHT) / (float)n;
@@ -305,6 +302,12 @@ int main(int argc, char *argv[]){
 
     
   iterate = 1;
+
+
+   if (PAPI_start(EventSet) != PAPI_OK){
+		printf("Errore nell'avvio del conteggio\n");
+		exit(1);
+	}
 
   while(iterate ){
     if(rank==MASTER)count++;
