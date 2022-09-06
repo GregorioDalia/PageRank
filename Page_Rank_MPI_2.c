@@ -61,8 +61,6 @@ int main(int argc, char *argv[]){
   long_long countCacheMiss;
 	int EventSet = PAPI_NULL;
 
-  int EventSet = PAPI_NULL
-
 
   double MPItime_start,MPItime_end;
   int firstnode;
