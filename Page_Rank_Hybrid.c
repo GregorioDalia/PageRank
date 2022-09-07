@@ -289,12 +289,12 @@ int main(int argc, char *argv[]){
   teleport_probability = (1 - WEIGHT) / (float)n;
 // qui thread !
 
-    printf("%d TUTTO OK PRE THREAD \n",rank);
+    //printf("%d TUTTO OK PRE THREAD \n",rank);
     
     
   #pragma omp parallel for num_threads(nt) 
   for (int i = 0; i < n; i++){
-    printf("%d %d ciclo\n",rank , omp_get_num_threads());
+    //printf("%d %d ciclo\n",rank , omp_get_num_threads());
     if(i<rows_num){
       local_sub_page_ranks[i] = 1.0 / (float)n;
       
