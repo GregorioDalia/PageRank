@@ -46,10 +46,10 @@ int main(int argc, char *argv[]){
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
   Node *pointer;                        /* iterates over sparse_matrix_local */        
   int iterate;                          /* flag: checks if the algorithm is converging or not*/
-  float sum;                            /* result of the multiplication of a row of the transition matrix and the page rank vector */
+  //float sum;                            /* result of the multiplication of a row of the transition matrix and the page rank vector */
   float score_norm = 0;                 /* difference between two consecutive page ranks */
   float local_score_norm = 0;           /* difference between two consecutive page ranks in the single process */
-  float diff;                           /* difference between two elements of consecutive page ranks */
+  //float diff;                           /* difference between two elements of consecutive page ranks */
   int min_rows_num;                     /* minimum number of rows managed by a process */
   int max_rows_num;                     /* maximum number of rows managed by a process */
   float* minarray;                      /* array of size min_rows_num; stores the rows managed by a process */
@@ -324,9 +324,9 @@ int main(int argc, char *argv[]){
     local_score_norm = 0;
 
     #pragma omp parallel for num_threads(nt)
-
-    for (int i = 0,k=rank; i < rows_num;i++,k += numtasks){
-      sum = 0.0;
+    for (int i = 0; i < rows_num;i++){
+      float sum = 0.0;
+      //int k = rank;
       Node *currNode = sparse_matrix_local[i];
 
       while (currNode!=NULL){
@@ -337,7 +337,7 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error
-      diff = local_sub_page_ranks[i] - complete_page_ranks[k];
+      float diff = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
       if (diff < 0){
         diff = -diff;
       }
@@ -346,6 +346,8 @@ int main(int argc, char *argv[]){
       //float temp = local_score_norm + diff;
       #pragma omp critical
       local_score_norm += diff;
+
+     // k +=numtasks;
 
       // update the round robin index for moving in complete_page_ranks
     }
