@@ -327,6 +327,7 @@ int main(int argc, char *argv[]){
     if(rank==MASTER)count++;
 
     local_score_norm = 0;
+    float diff [rows_num];
 
     #pragma omp parallel for num_threads(nt)
     for (int i = 0; i < rows_num;i++){
@@ -342,21 +343,25 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error
-      float diff = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
-      if (diff < 0){
-        diff = -diff;
+       diff[i] = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
+      if (diff[i] < 0){
+        diff[i] = -diff [i];
       }
         
       // sum to the score_norm
       //float temp = local_score_norm + diff;
       //#pragma omp critical
-      local_score_norm += diff;
+      //local_score_norm += diff;
 
      // k +=numtasks;
 
       // update the round robin index for moving in complete_page_ranks
     }
     
+    #pragma omp parallel for reduction (+:local_score_norm)
+    for (int i=0;i<rows_num;i++)
+        local_score_norm=local_score_norm+a[i];
+
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
       score_norm = local_score_norm;
