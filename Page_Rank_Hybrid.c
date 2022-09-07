@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
       exit(1);
     }
 
-    printf("DEBUG: MASTER open the file %s\n with %d thread\n",argv[1],nt);
+    printf("DEBUG: MASTER open the file %s with %d thread\n",argv[1],nt);
 
     if ((fp = fopen(argv[1], "r")) == NULL){
       fprintf(stderr, "[Error] cannot open file");
@@ -349,7 +349,7 @@ int main(int argc, char *argv[]){
         
       // sum to the score_norm
       //float temp = local_score_norm + diff;
-      #pragma omp critical
+      //#pragma omp critical
       local_score_norm += diff;
 
      // k +=numtasks;
