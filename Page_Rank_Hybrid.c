@@ -420,7 +420,7 @@ int main(int argc, char *argv[]){
 
 
 //tutti i processi stampano i propri cache miss e attendono sulla barriera
-	printf ("Sono il rank %d, questi sono i miei cache miss=%d\n",rank,countCacheMiss);
+//printf ("Sono il rank %d, questi sono i miei cache miss=%d\n",rank,countCacheMiss);
 
   MPI_Finalize();
 
