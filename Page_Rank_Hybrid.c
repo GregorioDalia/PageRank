@@ -360,7 +360,7 @@ int main(int argc, char *argv[]){
     
     #pragma omp parallel for reduction (+:local_score_norm)
     for (int i=0;i<rows_num;i++)
-        local_score_norm=local_score_norm+a[i];
+        local_score_norm=local_score_norm+diff[i];
 
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
