@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
       exit(1);
     }
 
-    printf("DEBUG: MASTER open the file %s\n",argv[1]);
+    printf("DEBUG: MASTER open the file %s\n with %d thread",argv[1],nt);
 
     if ((fp = fopen(argv[1], "r")) == NULL){
       fprintf(stderr, "[Error] cannot open file");
@@ -288,6 +288,8 @@ int main(int argc, char *argv[]){
     
   teleport_probability = (1 - WEIGHT) / (float)n;
 // qui thread !
+
+    printf("%d TUTTO OK PRE THREAD \n",rank);
     
     
   #pragma omp parallel for num_threads(nt)
@@ -317,8 +319,11 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
 */
+    //printf("%d START TO ITERATE \n",rank);
 
   while(iterate ){
+    printf("%d START TO ITERATE \n",rank);
+
     if(rank==MASTER)count++;
 
     local_score_norm = 0;
