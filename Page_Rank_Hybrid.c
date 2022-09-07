@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
 
   double MPItime_start,MPItime_end;
   int firstnode;
-      int count = 0;
+  int count = 0;
 
     /*
   //inizializzo la libreria PAPI
@@ -88,8 +88,8 @@ int main(int argc, char *argv[]){
 
 
     */
-   int mpisupport;
-   int nt;
+  int mpisupport;
+  int nt;
   // MPI initialization
   //MPI_Init(&argc,&argv);
   MPI_Init_thread(&argc,&argv,MPI_THREAD_FUNNELED, &mpisupport);
@@ -343,7 +343,7 @@ int main(int argc, char *argv[]){
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error
-       diff[i] = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
+      diff[i] = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
       if (diff[i] < 0){
         diff[i] = -diff [i];
       }
@@ -359,8 +359,9 @@ int main(int argc, char *argv[]){
     }
     
     #pragma omp parallel for reduction (+:local_score_norm)
-    for (int i=0;i<rows_num;i++)
-        local_score_norm=local_score_norm+diff[i];
+    for (int i=0;i<rows_num;i++){
+      local_score_norm = local_score_norm+diff[i];
+    }
 
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
@@ -428,7 +429,7 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
     */
-  MPI_Barrier (MPI_COMM_WORLD);
+  //MPI_Barrier (MPI_COMM_WORLD);
 
 
 //tutti i processi stampano i propri cache miss e attendono sulla barriera
