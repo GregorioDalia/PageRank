@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
-  Node *pointer;                        /* iterates over sparse_matrix_local */        
+  //Node *pointer;                        /* iterates over sparse_matrix_local */        
   int iterate;                          /* flag: checks if the algorithm is converging or not*/
   //float sum;                            /* result of the multiplication of a row of the transition matrix and the page rank vector */
   float score_norm = 0;                 /* difference between two consecutive page ranks */
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
       exit(1);
     }
 
-    printf("DEBUG: MASTER open the file %s\n with %d thread",argv[1],nt);
+    printf("DEBUG: MASTER open the file %s\n with %d thread\n",argv[1],nt);
 
     if ((fp = fopen(argv[1], "r")) == NULL){
       fprintf(stderr, "[Error] cannot open file");
@@ -292,13 +292,13 @@ int main(int argc, char *argv[]){
     printf("%d TUTTO OK PRE THREAD \n",rank);
     
     
-  #pragma omp parallel for num_threads(nt)
+  #pragma omp parallel for num_threads(nt) 
   for (int i = 0; i < n; i++){
-
+    printf("&d %d ciclo\n",rank , omp_get_num_threads);
     if(i<rows_num){
       local_sub_page_ranks[i] = 1.0 / (float)n;
       
-      pointer = sparse_matrix_local[i];
+      Node *pointer = sparse_matrix_local[i];
 
       // Update the value of the pointer
       while (pointer != NULL){  
