@@ -322,7 +322,7 @@ int main(int argc, char *argv[]){
     //printf("%d START TO ITERATE \n",rank);
 
   while(iterate ){
-    printf("%d START TO ITERATE \n",rank);
+    //printf("%d START TO ITERATE \n",rank);
 
     if(rank==MASTER)count++;
 
