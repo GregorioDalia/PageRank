@@ -159,8 +159,9 @@ int main(int argc, char *argv[]){
 
   }
   */
+  start = clock();
 
-
+   mean_coloumn_weighed = (1 - WEIGHT) / (float)n;
   //printf("DEBUG: INITIALIZE PAGE RANKS TO 1/N\n");
 
   percento = 0;
@@ -172,60 +173,30 @@ int main(int argc, char *argv[]){
     old_page_ranks[i] = 1.0 / (float)n;
     //mean_coloumn_weighed[i] = (1 - WEIGHT) / (float)n;
 
+    /*
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         //printf("%d%% ",percento);
     }
+   */
+   Node *pointer = sparse_matrix[i];
 
-  }
-    mean_coloumn_weighed = (1 - WEIGHT) / (float)n;
-
-
-  //printf("\nDEBUG: UPDATE MATRIX\n");
-
-  percento = 0;
-  m=0;
-
-  for (int i = 0; i < n; i++){
-
-    m++;
-
-    Node *pointer = sparse_matrix[i];
-
+    /*
     if(n>=100 && ((m%(n/10)) == 0)){
         percento +=10;
         //printf("%d%% ",percento);
     }
-
+    */
     // Update the value of the pointer
     while (pointer != NULL){
       pointer->value = (WEIGHT / (float)out_degree[pointer->start_node]);
       pointer = pointer->next;
     }
-
   }
-
-  printf("\n");
-  /*printf("MATRIX IS \n");
-  for (int i = 0 ; i < n ; i++){
-
-    printf("ROW %d",i);
-    Node *pointer = sparse_matrix[i];
-
-    do{
-        printf(" %d - %d = %f /// ",pointer->end_node,pointer->start_node,pointer->value);
-        pointer=pointer->next;
-    }while(pointer !=NULL);
-
-    printf("\n");
-
-  }
-  */
-
+ 
 
 
   // Measure time from now
-  start = clock();
 
 
   int count = 0;
@@ -293,9 +264,11 @@ int main(int argc, char *argv[]){
 
   } while (score_norm > ERROR);
 
+/*
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
+*/
 
 /*
   for (int i = 0; i < n; i++){
