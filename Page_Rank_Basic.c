@@ -251,9 +251,7 @@ int main(int argc, char *argv[]){
             MPI_STATUS_IGNORE);
   }
 
-  if(rank==MASTER){
-    MPItime_start = MPI_Wtime();
-  }
+
  
   teleport_probability = (1 - WEIGHT) / (float)n;
 
@@ -277,7 +275,9 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
 
-
+  if(rank==MASTER){
+    MPItime_start = MPI_Wtime();
+  }
   while(iterate ){
     if(rank==MASTER)count++;
 
