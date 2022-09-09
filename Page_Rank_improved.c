@@ -320,7 +320,7 @@ int main(int argc, char *argv[]){
 
 
 
-    if(x == 5){
+    if(x == 2){
 
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
