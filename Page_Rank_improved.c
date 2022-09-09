@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
 
   double MPItime_start,MPItime_end;
   int firstnode;
-  int count = 0;
+      int count = 0;
 
 
 
@@ -277,8 +277,9 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
 
-  //int count =0; 
+    int x = 0;
   while(iterate ){
+    if(rank==MASTER)count++;
 
     local_score_norm = 0;
     
@@ -306,20 +307,20 @@ int main(int argc, char *argv[]){
       // update the round robin index for moving in complete_page_ranks
       k += numtasks;
     }
-    
-    if(rank == MASTER){
-        score_norm= local_score_norm;
+    x++;
+
+    if( x == 6 )x=0;
+
+    if(rank==MASTER){
         for (int i = 0,k = 0 ; i<rows_num;i++){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
       }
-      
-      if(score_norm <= ERROR)  {
-        iterate = 0;
-      }
     }
 
-    if(count==5){
+
+
+    if(x == 5){
 
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
@@ -350,7 +351,11 @@ int main(int argc, char *argv[]){
         }
       } 
 
-   
+
+      
+      if(score_norm <= ERROR)  {
+        iterate = 0;
+      }
       
       complete_page_ranks[n] = iterate;
 
@@ -371,8 +376,6 @@ int main(int argc, char *argv[]){
       iterate = complete_page_ranks[n];
     }
     }
-    count++;
-    if (count == 6)count  = 0;
 
   }
 
