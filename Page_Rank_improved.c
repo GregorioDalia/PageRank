@@ -43,7 +43,8 @@ int main(int argc, char *argv[]){
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
-  Node *pointer;                        /* iterates over sparse_matrix_local */        
+  Node *pointer;                        /* iterates over sparse_matrix_local */  
+  Node *currNode;      
   int iterate;                          /* flag: checks if the algorithm is converging or not*/
   float sum;                            /* result of the multiplication of a row of the transition matrix and the page rank vector */
   float score_norm = 0;                 /* difference between two consecutive page ranks */
@@ -285,7 +286,7 @@ int main(int argc, char *argv[]){
     
     for (int i = 0,k=rank; i < rows_num;i++){
       sum = 0.0;
-      Node *currNode = sparse_matrix_local[i];
+      currNode = sparse_matrix_local[i];
 
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
@@ -320,7 +321,7 @@ int main(int argc, char *argv[]){
 
 
 
-    if(x == 2){
+    if(x == 5){
 
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
