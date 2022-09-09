@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
 
   double MPItime_start,MPItime_end;
   int firstnode;
-      int count = 0;
+  int count = 0;
 
 
 
@@ -277,7 +277,7 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
 
-    int count =0; 
+  //int count =0; 
   while(iterate ){
 
     local_score_norm = 0;
