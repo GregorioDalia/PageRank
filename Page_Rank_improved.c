@@ -308,6 +308,7 @@ int main(int argc, char *argv[]){
     }
     
     if(rank == MASTER){
+        score_norm= local_score_norm;
         for (int i = 0,k = 0 ; i<rows_num;i++){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
