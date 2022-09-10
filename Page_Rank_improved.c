@@ -348,7 +348,7 @@ int main(int argc, char *argv[]){
         k += numtasks;
       }
       
-      if(score_norm <= 0.15)  {
+      if(score_norm <= 0.1)  {
         iterate = 0;
       }
       
@@ -373,7 +373,7 @@ int main(int argc, char *argv[]){
 
   }
 
-    
+    /*
   if(rank == MASTER){
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
@@ -381,6 +381,7 @@ int main(int argc, char *argv[]){
         }
     }
     }
+    */
     //ora andiamo in parallelo
 
     iterate = 1;
