@@ -373,14 +373,14 @@ int main(int argc, char *argv[]){
 
   }
 
-    /*
+    
   if(rank == MASTER){
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
                 printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
         }
     }
-    */
+    
     //ora andiamo in parallelo
 
     iterate = 1;
@@ -397,7 +397,7 @@ int main(int argc, char *argv[]){
       currNode = sparse_matrix_local[i];
 
       while (currNode!=NULL){
-        sum += (complete_page_ranks[currNode->start_node] * currNode->value);
+        sum += (old_page_ranks[currNode->start_node] * currNode->value);
         currNode = currNode->next;
       } 
 
@@ -408,7 +408,7 @@ int main(int argc, char *argv[]){
       if (diff < 0){
         diff = -diff;
       }
-        
+    complete_page_ranks[k]=local_sub_page_ranks[i];
       // sum to the score_norm
       float temp = local_score_norm + diff;
       local_score_norm += diff;
