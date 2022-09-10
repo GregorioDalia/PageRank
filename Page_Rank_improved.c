@@ -380,7 +380,7 @@ int main(int argc, char *argv[]){
                 printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
         }
     }
-    
+    }
     //ora andiamo in parallelo
 
     iterate = 1;
