@@ -460,7 +460,7 @@ int main(int argc, char *argv[]){
   if(rank == MASTER){
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
-                printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , page_ranks[i]);
+                printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
         }
     }
 
