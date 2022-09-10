@@ -296,7 +296,7 @@ int main(int argc, char *argv[]){
                 currNode = sparse_matrix_local[i];
 
                 while (currNode!=NULL){
-                    sum += (complete_page_ranks[currNode->start_node] * currNode->value);
+                    sum += (old_page_ranks[currNode->start_node] * currNode->value);
                     currNode = currNode->next;
                 } 
 
