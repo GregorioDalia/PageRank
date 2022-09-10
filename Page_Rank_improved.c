@@ -41,6 +41,9 @@ int main(int argc, char *argv[]){
   int* out_degree;                      /* vector containing the out_degree of all nodes */
   float* local_sub_page_ranks;          /* sub page_ranks vector of a process */
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
+
+  float*  old_complete_page_ranks;
+
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
   Node *pointer;                        /* iterates over sparse_matrix_local */     
@@ -168,6 +171,8 @@ int main(int argc, char *argv[]){
   
   // Creation of the complete page_ranks vector
   complete_page_ranks = malloc((n+1) * sizeof(float));
+  old_complete_page_ranks = malloc((n+1) * sizeof(float));
+
   
   for (int k = 0; k < n; k++){
     out_degree[k] = 0;
@@ -368,10 +373,22 @@ int main(int argc, char *argv[]){
 
   }
 
-
+    /*
+  if(rank == MASTER){
+    if(strcmp(argv[1],"DEMO.txt")==0){
+          for (int i = 0; i < n; i++){
+                printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
+        }
+    }
+    */
     //ora andiamo in parallelo
 
     iterate = 1;
+    for ( int i =0; i < n;i++){
+        old_complete_page_ranks[i]=complete_page_ranks[i];
+    }
+
+
     while ( iterate){
     local_score_norm = 0;
     
