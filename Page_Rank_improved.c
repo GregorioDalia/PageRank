@@ -43,8 +43,8 @@ int main(int argc, char *argv[]){
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
-  Node *pointer;                        /* iterates over sparse_matrix_local */  
-  Node *currNode;      
+  Node *pointer;                        /* iterates over sparse_matrix_local */     
+  Node *currNode;   
   int iterate;                          /* flag: checks if the algorithm is converging or not*/
   float sum;                            /* result of the multiplication of a row of the transition matrix and the page rank vector */
   float score_norm = 0;                 /* difference between two consecutive page ranks */
@@ -278,7 +278,7 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
 
-    int x = 0;
+
   while(iterate ){
     if(rank==MASTER)count++;
 
@@ -308,21 +308,7 @@ int main(int argc, char *argv[]){
       // update the round robin index for moving in complete_page_ranks
       k += numtasks;
     }
-    x++;
-
-    if( x == 6 )x=0;
-
-    if(rank==MASTER){
-        for (int i = 0,k = 0 ; i<rows_num;i++){
-        complete_page_ranks[k]=local_sub_page_ranks[i];
-        k += numtasks;
-      }
-    }
-
-
-
-    if(x == 5){
-
+    
     // MASTER update the page rank and valuete the error
     if (rank == MASTER){
       score_norm = local_score_norm;
@@ -352,9 +338,12 @@ int main(int argc, char *argv[]){
         }
       } 
 
-
+      for (int i = 0,k = 0 ; i<rows_num;i++){
+        complete_page_ranks[k]=local_sub_page_ranks[i];
+        k += numtasks;
+      }
       
-      if(score_norm <= ERROR)  {
+      if(score_norm <= 0.15)  {
         iterate = 0;
       }
       
@@ -376,9 +365,92 @@ int main(int argc, char *argv[]){
       
       iterate = complete_page_ranks[n];
     }
-    }
 
   }
+
+
+    //ora andiamo in parallelo
+
+    iterate = 1;
+    while ( iterate){
+    local_score_norm = 0;
+    
+    for (int i = 0,k=rank; i < rows_num;i++){
+      sum = 0.0;
+      currNode = sparse_matrix_local[i];
+
+      while (currNode!=NULL){
+        sum += (complete_page_ranks[currNode->start_node] * currNode->value);
+        currNode = currNode->next;
+      } 
+
+      local_sub_page_ranks[i] = sum + teleport_probability;
+      
+      // take the absolute value of the error
+      diff = local_sub_page_ranks[i] - complete_page_ranks[k];
+      if (diff < 0){
+        diff = -diff;
+      }
+        
+      // sum to the score_norm
+      float temp = local_score_norm + diff;
+      local_score_norm += diff;
+
+      // update the round robin index for moving in complete_page_ranks
+      k += numtasks;
+    }
+
+    if(local_score_norm <= ERROR){
+        iterate = 0;
+    }
+
+    }
+
+
+    //convergiamo per l'ultima volta
+    if (rank == MASTER){
+      for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
+
+        if(sender_rank < remaining_rows){     
+                
+          MPI_Recv(maxarray,max_rows_num + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+          
+          for( int k=0,i= sender_rank; k<max_rows_num  ; k++){
+            complete_page_ranks[i] = maxarray[k];
+            i=i+numtasks;
+          }
+          score_norm += maxarray[max_rows_num];
+        
+        }else{
+
+          MPI_Recv(minarray,min_rows_num+1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
+          for( int k=0, i= sender_rank; k<min_rows_num ; k++){
+            complete_page_ranks[i] = minarray[k];
+            i=i+numtasks;
+          }
+
+          score_norm += minarray[min_rows_num];
+        }
+      } 
+
+      for (int i = 0,k = 0 ; i<rows_num;i++){
+        complete_page_ranks[k]=local_sub_page_ranks[i];
+        k += numtasks;
+      }
+ 
+    }
+    // WORKERS send the new page_rank values
+    else{
+
+      //local_sub_page_ranks[rows_num]=local_score_norm;
+      
+      MPI_Send(local_sub_page_ranks, rows_num+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
+
+      //MPI_Recv(complete_page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+      
+    }
+
 
   MPItime_end = MPI_Wtime();
 
@@ -386,6 +458,12 @@ int main(int argc, char *argv[]){
   MPI_Finalize();
 
   if(rank == MASTER){
+    if(argv[1] == 'DEMO.txt'){
+          for (int i = 0; i < n; i++){
+                printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , page_ranks[i]);
+        }
+    }
+
     printf("%d iterazioni \n ",count);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
   }
