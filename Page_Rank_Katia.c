@@ -300,7 +300,7 @@ int main(int argc, char *argv[]){
                     currNode = currNode->next;
                 } 
 
-                page_ranks[i] = sum + teleport_probability;
+                page_ranks[k] = sum + teleport_probability;
                 
                 // take the absolute value of the error
                 diff = page_ranks[k] - old_page_ranks[k];
