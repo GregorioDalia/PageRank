@@ -389,16 +389,20 @@ int main(int argc, char *argv[]){
         old_complete_page_ranks[i]=complete_page_ranks[i];
     }
 
+    int count2=0;
+
 
     while ( iterate){
     local_score_norm = 0;
+    if(rank==MASTER)count2++;
+
     
     for (int i = 0,k=rank; i < rows_num;i++){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
 
       while (currNode!=NULL){
-        sum += (old_complete_page_ranks[currNode->start_node] * currNode->value);
+        sum += (complete_page_ranks[currNode->start_node] * currNode->value);
         currNode = currNode->next;
       } 
 
