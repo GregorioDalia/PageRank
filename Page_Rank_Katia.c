@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
   int* out_degree;                      /* vector containing the out_degree of all nodes */
   float* old_page_ranks;          /* sub page_ranks vector of a process */
   float* page_ranks;           /* complete page_rankes vector, all processes have their copy */
+  float* very_old_page_ranks;
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
   Node *pointer;                        /* iterates over sparse_matrix_local */     
@@ -145,6 +146,8 @@ int main(int argc, char *argv[]){
     for (int k = 0; k < rows_num; k++){
         sparse_matrix_local[k] = NULL;
     }
+
+    very_old_page_ranks = malloc(n * sizeof(float));
   }   
   // WORKER : receive the values of the edges
   else{
@@ -272,6 +275,10 @@ int main(int argc, char *argv[]){
         pointer = pointer->next;
       }
     }
+
+    if(rank==MASTER){
+      very_old_page_ranks[i] = 1.0 / (float)n;
+    }
     
     old_page_ranks[i] = 1.0 / (float)n;
     page_ranks[i] = 1.0 / (float)n;
@@ -329,7 +336,7 @@ int main(int argc, char *argv[]){
         
         // MASTER update the page rank and valuete the error
         if (rank == MASTER){
-            score_norm = local_score_norm;
+            score_norm = 0.0;
 
             for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
@@ -343,13 +350,20 @@ int main(int argc, char *argv[]){
                         page_ranks[i] = old_page_ranks[i];
                         i=i+numtasks;
                     }
-                    score_norm += old_page_ranks[n];
+                    //score_norm += old_page_ranks[n];
 
             } 
+
+            float global_diff;
 
             printf("\nI'M THE MASTER AND THIS IS MY NEW PAGE RANK");
             for (int i = 0; i < n; i++){
                 printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+                global_diff = page_ranks[i] - old_page_ranks[i];
+                if(global_diff < 0){
+                  global_diff = -global_diff;
+                }
+                score_norm += global_diff;
             }
             
             if(score_norm <= ERROR)  {
