@@ -377,6 +377,8 @@ int main(int argc, char *argv[]){
             for(int i=1; i<numtasks; i++){
                 MPI_Send(page_ranks, n+1, MPI_FLOAT, i, TAG, MPI_COMM_WORLD);
             }
+
+            very_old_page_ranks = page_ranks;
         }
         // WORKERS send the new page_rank values
         else{
