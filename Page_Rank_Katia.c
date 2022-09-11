@@ -298,16 +298,17 @@ int main(int argc, char *argv[]){
             page_ranks = old_page_ranks;
             old_page_ranks = temp;
 
-            printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK AFTER THE SWITCH:\n", rank);
-            for (int i = 0; i < n; i++){
-                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
-            }
+            if(rank == 1){
+                printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK AFTER THE SWITCH:\n", rank);
+                for (int i = 0; i < n; i++){
+                    printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+                }
 
-            printf("\nI'M THE PROCESS %d AND THIS IS MY OLD PAGE RANK AFTER THE SWITCH:\n", rank);
-            for (int i = 0; i < n; i++){
-                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
+                printf("\nI'M THE PROCESS %d AND THIS IS MY OLD PAGE RANK AFTER THE SWITCH:\n", rank);
+                for (int i = 0; i < n; i++){
+                    printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
+                }
             }
-
             for (int i = 0,k=rank; i < rows_num;i++){
                 sum = 0.0;
                 currNode = sparse_matrix_local[i];
@@ -333,11 +334,13 @@ int main(int argc, char *argv[]){
                 k += numtasks;
             }
             
-            for (int i = 0; i < n; i++){
-                printf("\n\nIN PROCESS %d THE PAGE RANK (AFTER CALCULUS) OF NODE %d IS : %0.50f \n\n", rank, i , page_ranks[i]);
-            }
+            if(rank == 1){
+              for (int i = 0; i < n; i++){
+                  printf("\n\nIN PROCESS %d THE PAGE RANK (AFTER CALCULUS) OF NODE %d IS : %0.50f \n\n", rank, i , page_ranks[i]);
+              }
 
-            printf("IN PROCESS %d LOCAL SCORE NORM IS : %0.50f \n", rank, local_score_norm);
+              printf("IN PROCESS %d LOCAL SCORE NORM IS : %0.50f \n", rank, local_score_norm);
+            }
             
 
         } while(local_score_norm > ERROR);
