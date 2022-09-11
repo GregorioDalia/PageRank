@@ -356,16 +356,17 @@ int main(int argc, char *argv[]){
 
             float global_diff;
 
-            printf("\nI'M THE MASTER AND THIS IS MY NEW PAGE RANK");
+            printf("\nI'M THE MASTER AND THIS IS MY NEW PAGE RANK\n");
             for (int i = 0; i < n; i++){
                 printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
-                global_diff = page_ranks[i] - old_page_ranks[i];
+                global_diff = page_ranks[i] - very_old_page_ranks[i];
                 if(global_diff < 0){
                   global_diff = -global_diff;
                 }
                 score_norm += global_diff;
             }
             
+            printf("\nTOTAL SCORE NORM IS: %0.50f\n", score_norm);
             if(score_norm <= ERROR)  {
                 iterate = 0;
             }
