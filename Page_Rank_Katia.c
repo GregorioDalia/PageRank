@@ -465,9 +465,11 @@ int main(int argc, char *argv[]){
   if(rank == MASTER){
     printf("%d iterazioni \n ",count);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
+    /*
     for (int i = 0; i < n; i++){
         printf("THE PAGE RANK OF NODE %d IS : %0.50f \n", i , page_ranks[i]);
     }
+    */
   }
 
   return 0;
