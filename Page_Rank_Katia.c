@@ -341,10 +341,10 @@ int main(int argc, char *argv[]){
             for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
                 MPI_Recv(old_page_ranks, n + 1, MPI_FLOAT, sender_rank, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-                    printf("\nI'M THE MASTER AND THIS IS THE PAGE RANK I RECEIVED FROM %d", sender_rank);
+                    /*printf("\nI'M THE MASTER AND THIS IS THE PAGE RANK I RECEIVED FROM %d\n", sender_rank);
                     for (int i = 0; i < n; i++){
                         printf("IN PROCESS %d THE PAGE RANK (RECEIVED) OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
-                    }
+                    }*/
                     
                     for( int k=0,i= sender_rank; k<max_rows_num  ; k++){
                         page_ranks[i] = old_page_ranks[i];
@@ -364,6 +364,16 @@ int main(int argc, char *argv[]){
                   global_diff = -global_diff;
                 }
                 score_norm += global_diff;
+            }
+
+            printf("\nI'M THE MASTER AND THIS IS MY VERY OLD PAGE RANK\n");
+            for (int i = 0; i < n; i++){
+                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , very_old_page_ranks[i]);
+            }
+
+            printf("\nI'M THE MASTER AND THIS IS MY OLD PAGE RANK\n");
+            for (int i = 0; i < n; i++){
+                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
             }
             
             printf("\nTOTAL SCORE NORM IS: %0.50f\n", score_norm);
