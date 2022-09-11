@@ -399,7 +399,7 @@ int main(int argc, char *argv[]){
 
             MPI_Recv(page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
             
-            iterate = old_page_ranks[n];
+            iterate = page_ranks[n];
         }
 
   }
