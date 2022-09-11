@@ -297,7 +297,7 @@ int main(int argc, char *argv[]){
             float* temp = page_ranks;
             page_ranks = old_page_ranks;
             old_page_ranks = temp;
-
+            /*
             if(rank == 1){
               printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK AFTER THE SWITCH:\n", rank);
               for (int i = 0; i < n; i++){
@@ -309,7 +309,7 @@ int main(int argc, char *argv[]){
                   printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
               }
             }
-
+            */
             for(int i = 0, k = rank, j = 0; i < n; i++){
               if(i == k){
                 sum = 0.0;
@@ -367,7 +367,7 @@ int main(int argc, char *argv[]){
                 // update the round robin index for moving in complete_page_ranks
                 k += numtasks;
               }
-            }*/
+            }
             
             if(rank == 1){
               for (int i = 0; i < n; i++){
@@ -375,7 +375,7 @@ int main(int argc, char *argv[]){
               }
 
               printf("IN PROCESS %d LOCAL SCORE NORM IS : %0.50f \n", rank, local_score_norm);
-            }
+            }*/
             
 
         } while(local_score_norm > ERROR);
@@ -446,11 +446,11 @@ int main(int argc, char *argv[]){
             MPI_Send(page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
 
             MPI_Recv(page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-
+            /*
             printf("\nI'M THE PROCESS %d AND THIS IS THE PAGE RANK I RECEIVED:\n", rank);
             for (int i = 0; i < n; i++){
                 printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
-            }
+            }*/
             
             iterate = page_ranks[n];
         }
