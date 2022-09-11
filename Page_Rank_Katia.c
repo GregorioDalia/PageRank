@@ -309,8 +309,41 @@ int main(int argc, char *argv[]){
                   printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
               }
             }
-            for (int i = 0,k=rank; i < n;i++){
+
+            for(int i = 0, k = rank, j = 0; i < n; i++){
               if(i == k){
+                sum = 0.0;
+                currNode = sparse_matrix_local[j];
+
+                while (currNode!=NULL){
+                    sum += (old_page_ranks[currNode->start_node] * currNode->value);
+                    currNode = currNode->next;
+                } 
+
+                page_ranks[i] = sum + teleport_probability;
+                
+                // take the absolute value of the error
+                diff = page_ranks[i] - old_page_ranks[i];
+                if (diff < 0){
+                    diff = -diff;
+                }
+                    
+                // sum to the score_norm
+                float temp = local_score_norm + diff;
+                local_score_norm += diff;
+
+                // update the round robin index for moving in complete_page_ranks
+                k += numtasks;
+                j++;
+              }
+              else{
+                page_ranks[i] = old_page_ranks[i];
+              }
+            }
+
+
+            /*
+            for (int i = 0,k=rank; i < rows_num;i++){
                 sum = 0.0;
                 currNode = sparse_matrix_local[i];
 
@@ -333,10 +366,7 @@ int main(int argc, char *argv[]){
 
                 // update the round robin index for moving in complete_page_ranks
                 k += numtasks;
-              }
-              else{
-                page_ranks[i] = old_page_ranks[i];
-              }
+              }*/
             }
             
             if(rank == 1){
