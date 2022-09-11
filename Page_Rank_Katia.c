@@ -366,8 +366,8 @@ int main(int argc, char *argv[]){
 
                 // update the round robin index for moving in complete_page_ranks
                 k += numtasks;
-              }*/
-            }
+              }
+            }*/
             
             if(rank == 1){
               for (int i = 0; i < n; i++){
