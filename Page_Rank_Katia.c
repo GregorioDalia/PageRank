@@ -13,7 +13,7 @@ typedef struct Node
 
 #define WEIGHT 0.85     // Real in (0, 1), best at 0.85
 #define ERROR 0.0001   // Real in (0, +inf), best at 0.0001
-#define LOCAL_ERROR 0.000001 
+//#define LOCAL_ERROR 0.000001 
 #define MASTER 0        // Rank of the master process
 #define TAG 0           /* MPI message tag parameter */
 
@@ -298,6 +298,16 @@ int main(int argc, char *argv[]){
             page_ranks = old_page_ranks;
             old_page_ranks = temp;
 
+            printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK AFTER THE SWITCH:\n", rank);
+            for (int i = 0; i < n; i++){
+                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+            }
+
+            printf("\nI'M THE PROCESS %d AND THIS IS MY OLD PAGE RANK AFTER THE SWITCH:\n", rank);
+            for (int i = 0; i < n; i++){
+                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
+            }
+
             for (int i = 0,k=rank; i < rows_num;i++){
                 sum = 0.0;
                 currNode = sparse_matrix_local[i];
@@ -322,15 +332,15 @@ int main(int argc, char *argv[]){
                 // update the round robin index for moving in complete_page_ranks
                 k += numtasks;
             }
-
+            
             for (int i = 0; i < n; i++){
-                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+                printf("\n\nIN PROCESS %d THE PAGE RANK (AFTER CALCULUS) OF NODE %d IS : %0.50f \n\n", rank, i , page_ranks[i]);
             }
 
             printf("IN PROCESS %d LOCAL SCORE NORM IS : %0.50f \n", rank, local_score_norm);
+            
 
-
-        } while(local_score_norm > LOCAL_ERROR);
+        } while(local_score_norm > ERROR);
 
         
         
@@ -356,9 +366,9 @@ int main(int argc, char *argv[]){
 
             float global_diff;
 
-            printf("\nI'M THE MASTER AND THIS IS MY NEW PAGE RANK\n");
+            //printf("\nI'M THE MASTER AND THIS IS MY NEW PAGE RANK\n");
             for (int i = 0; i < n; i++){
-                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+                //printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
                 global_diff = page_ranks[i] - very_old_page_ranks[i];
                 if(global_diff < 0){
                   global_diff = -global_diff;
@@ -366,17 +376,17 @@ int main(int argc, char *argv[]){
                 score_norm += global_diff;
             }
 
-            printf("\nI'M THE MASTER AND THIS IS MY VERY OLD PAGE RANK\n");
+            //printf("\nI'M THE MASTER AND THIS IS MY VERY OLD PAGE RANK\n");
             for (int i = 0; i < n; i++){
-                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , very_old_page_ranks[i]);
+                //printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , very_old_page_ranks[i]);
             }
 
-            printf("\nI'M THE MASTER AND THIS IS MY OLD PAGE RANK\n");
+            /*printf("\nI'M THE MASTER AND THIS IS MY OLD PAGE RANK\n");
             for (int i = 0; i < n; i++){
                 printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , old_page_ranks[i]);
             }
             
-            printf("\nTOTAL SCORE NORM IS: %0.50f\n", score_norm);
+            printf("\nTOTAL SCORE NORM IS: %0.50f\n", score_norm);*/
             if(score_norm <= ERROR)  {
                 iterate = 0;
             }
@@ -398,6 +408,11 @@ int main(int argc, char *argv[]){
             MPI_Send(page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD);  
 
             MPI_Recv(page_ranks, n+1, MPI_FLOAT, 0, TAG, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+
+            printf("\nI'M THE PROCESS %d AND THIS IS THE PAGE RANK I RECEIVED:\n", rank);
+            for (int i = 0; i < n; i++){
+                printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , page_ranks[i]);
+            }
             
             iterate = page_ranks[n];
         }
