@@ -301,7 +301,7 @@ int main(int argc, char *argv[]){
       printf("\nMULTIPLICATION ROW %d AT %d ITERATION (1ST WHILE)\n", i, count);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-        printf("%0.5f * %0.5f = %0.5f\n", old_page_ranks[currNode->start_node], currNode->value, old_page_ranks[currNode->start_node] * currNode->value);
+        printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
       } 
@@ -425,7 +425,7 @@ int main(int argc, char *argv[]){
       printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-        printf("%0.5f * %0.5f = %0.5f\n", old_page_ranks[currNode->start_node], currNode->value, old_page_ranks[currNode->start_node] * currNode->value);
+        printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
       } 
