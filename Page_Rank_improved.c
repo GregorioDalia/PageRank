@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
   float* local_sub_page_ranks;          /* sub page_ranks vector of a process */
   float* complete_page_ranks;           /* complete page_rankes vector, all processes have their copy */
 
-  float*  old_complete_page_ranks;
+  //float*  old_complete_page_ranks;
 
   float teleport_probability;           /* probability of the random walker to teleport on a random node */ 
   Node** sparse_matrix_local;           /* sparse matrix containing only the rows of the transition matrix managed by the process*/
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]){
   
   // Creation of the complete page_ranks vector
   complete_page_ranks = malloc((n+1) * sizeof(float));
-  old_complete_page_ranks = malloc((n+1) * sizeof(float));
+  //old_complete_page_ranks = malloc((n+1) * sizeof(float));
 
   
   for (int k = 0; k < n; k++){
@@ -287,6 +287,11 @@ int main(int argc, char *argv[]){
   while(iterate ){
     if(rank==MASTER)count++;
 
+    printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE FIRST WHILE BEFORE CALCULUS AT ITERATION %d:\n", rank, count);
+    for (int i = 0; i < n; i++){
+        printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , complete_page_ranks[i]);
+    }
+
     local_score_norm = 0;
     
     for (int i = 0,k=rank; i < rows_num;i++){
@@ -347,6 +352,13 @@ int main(int argc, char *argv[]){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
       }
+
+      printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE FIRST WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count);
+      for (int i = 0; i < n; i++){
+          printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count, complete_page_ranks[i]);
+      }
+
+      printf("\nI'M THE PROCESS %d AND THIS IS MY SCORE NORM AT ITERATION %d: %0.5f\n", rank, count, score_norm);
       
       if(score_norm <= 0.1)  {
         iterate = 0;
@@ -385,9 +397,9 @@ int main(int argc, char *argv[]){
     //ora andiamo in parallelo
 
     iterate = 1;
-    for ( int i =0; i < n;i++){
+    /*for ( int i =0; i < n;i++){
         old_complete_page_ranks[i]=complete_page_ranks[i];
-    }
+    }*/
 
     int count2=0;
 
@@ -395,6 +407,11 @@ int main(int argc, char *argv[]){
     while ( iterate){
     local_score_norm = 0;
     if(rank==MASTER)count2++;
+
+    printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE BEFORE CALCULUS AT ITERATION %d:\n", rank, count2);
+    for (int i = 0; i < n; i++){
+        printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , complete_page_ranks[i]);
+    }
 
     
     for (int i = 0,k=rank; i < rows_num;i++){
@@ -422,6 +439,14 @@ int main(int argc, char *argv[]){
       k += numtasks;
     }
 
+    printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count2);
+      for (int i = 0; i < n; i++){
+          printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count2, complete_page_ranks[i]);
+      }
+
+      printf("\nI'M THE PROCESS %d AND THIS IS MY LOCAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, count2, local_score_norm);
+      
+
     if(local_score_norm <= ERROR){
         iterate = 0;
     }
@@ -431,6 +456,8 @@ int main(int argc, char *argv[]){
 
     //convergiamo per l'ultima volta
     if (rank == MASTER){
+      score_norm = 0.0;
+      count2++;
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
         if(sender_rank < remaining_rows){     
@@ -460,6 +487,14 @@ int main(int argc, char *argv[]){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
       }
+
+      printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL PAGE RANK AFTER CALCULUS:\n", rank);
+      for (int i = 0; i < n; i++){
+          printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i, complete_page_ranks[i]);
+      }
+
+      printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, score_norm);
+      
  
     }
     // WORKERS send the new page_rank values
