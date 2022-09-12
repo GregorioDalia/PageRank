@@ -67,7 +67,8 @@ int main(int argc, char *argv[]){
       int count = 0;
 
 
-
+  int mpisupport;
+  int nt;
   // MPI initialization
   MPI_Init_thread(&argc,&argv,MPI_THREAD_FUNNELED, &mpisupport);
   MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
