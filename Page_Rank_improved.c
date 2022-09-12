@@ -523,13 +523,13 @@ int main(int argc, char *argv[]){
   MPI_Finalize();
 
   if(rank == MASTER){
-    /*
+    
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
-                printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
+                printf("THE PAGE RANK OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
         }
     }
-    */
+    
     printf("%d iterazioni \n ",count);
     printf("%d seconde iterazioni %d\n",count2);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
