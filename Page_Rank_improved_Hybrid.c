@@ -422,7 +422,7 @@ int main(int argc, char *argv[]){
 
     */
     #pragma omp parallel for num_threads(nt)
-    for (int i = 0,k=rank; i < rows_num;i++){
+    for (int i = 0; i < rows_num;i++){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
       //printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
