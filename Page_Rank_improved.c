@@ -286,26 +286,26 @@ int main(int argc, char *argv[]){
 
   while(iterate ){
     if(rank==MASTER)count++;
-
+    /*
     printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE FIRST WHILE BEFORE CALCULUS AT ITERATION %d:\n", rank, count);
     for (int i = 0; i < n; i++){
         printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , complete_page_ranks[i]);
     }
-
+    */
     local_score_norm = 0;
     
     for (int i = 0,k=rank; i < rows_num;i++){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
 
-      printf("\nMULTIPLICATION ROW %d AT %d ITERATION (1ST WHILE)\n", i, count);
+      //printf("\nMULTIPLICATION ROW %d AT %d ITERATION (1ST WHILE)\n", i, count);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-        printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
+        //printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
       } 
-      printf("row %d finalsum = %f\n",i,sum);
+      //printf("row %d finalsum = %f\n",i,sum);
 
 
       local_sub_page_ranks[i] = sum + teleport_probability;
@@ -357,14 +357,14 @@ int main(int argc, char *argv[]){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
       }
-
+      /*
       printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE FIRST WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count);
       for (int i = 0; i < n; i++){
           printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count, complete_page_ranks[i]);
       }
 
       printf("\nI'M THE PROCESS %d AND THIS IS MY SCORE NORM AT ITERATION %d: %0.5f\n", rank, count, score_norm);
-      
+      */
       if(score_norm <= 0.1)  {
         iterate = 0;
       }
@@ -412,25 +412,25 @@ int main(int argc, char *argv[]){
     while ( iterate){
     local_score_norm = 0;
     if(rank==MASTER)count2++;
-
+    /*
     printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE BEFORE CALCULUS AT ITERATION %d:\n", rank, count2);
     for (int i = 0; i < n; i++){
         printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , complete_page_ranks[i]);
     }
 
-    
+    */
     for (int i = 0,k=rank; i < rows_num;i++){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
-      printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
+      //printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-        printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
+        //printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
       } 
 
-      printf("row %d finalsum = %f\n",i,sum);
+      //printf("row %d finalsum = %f\n",i,sum);
 
       local_sub_page_ranks[i] = sum + teleport_probability;
       
@@ -452,14 +452,14 @@ int main(int argc, char *argv[]){
       complete_page_ranks[k]=local_sub_page_ranks[i];
       k += numtasks;
     }
-
+    /*
     printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count2);
     for (int i = 0; i < n; i++){
         printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count2, complete_page_ranks[i]);
     }
 
     printf("\nI'M THE PROCESS %d AND THIS IS MY LOCAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, count2, local_score_norm);
-      
+    */ 
 
     if(local_score_norm <= ERROR){
         iterate = 0;
@@ -501,7 +501,7 @@ int main(int argc, char *argv[]){
         k += numtasks;
       }
 
-      printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, score_norm);
+      //printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, score_norm);
       
  
     }
@@ -523,12 +523,13 @@ int main(int argc, char *argv[]){
   MPI_Finalize();
 
   if(rank == MASTER){
+    /*
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
                 printf("THE PAGE RANKE OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
         }
     }
-
+    */
     printf("%d iterazioni \n ",count);
     printf("%d seconde iterazioni %d\n",count2);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
