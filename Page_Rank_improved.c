@@ -298,10 +298,15 @@ int main(int argc, char *argv[]){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
 
+      printf("\nMULTIPLICATION ROW %d AT %d ITERATION (1ST WHILE)\n", i, count);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
+        printf("%0.5f * %0.5f = %0.5f\n", old_page_ranks[currNode->start_node], currNode->value, old_page_ranks[currNode->start_node] * currNode->value);
+
         currNode = currNode->next;
       } 
+      printf("row %d finalsum = %f\n",i,sum);
+
 
       local_sub_page_ranks[i] = sum + teleport_probability;
       
@@ -417,11 +422,15 @@ int main(int argc, char *argv[]){
     for (int i = 0,k=rank; i < rows_num;i++){
       sum = 0.0;
       currNode = sparse_matrix_local[i];
-
+      printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
+        printf("%0.5f * %0.5f = %0.5f\n", old_page_ranks[currNode->start_node], currNode->value, old_page_ranks[currNode->start_node] * currNode->value);
+
         currNode = currNode->next;
       } 
+
+      printf("row %d finalsum = %f\n",i,sum);
 
       local_sub_page_ranks[i] = sum + teleport_probability;
       

@@ -143,22 +143,8 @@ int main(int argc, char *argv[]){
     in_degree[tonode]++;
 
   }
-  printf("\n");
-  /*printf("MATRIX IS \n");
-  for (int i = 0 ; i < n ; i++){
-
-    printf("ROW %d",i);
-    Node *pointer = sparse_matrix[i];
-
-    do{
-        printf(" %d - %d /// ",pointer->end_node,pointer->start_node);
-        pointer=pointer->next;
-    }while(pointer !=NULL);
-
-    printf("\n");
-
-  }
-  */
+  
+  
   start = clock();
 
    mean_coloumn_weighed = (1 - WEIGHT) / (float)n;
@@ -193,6 +179,22 @@ int main(int argc, char *argv[]){
       pointer = pointer->next;
     }
   }
+
+  printf("\n");
+  printf("MATRIX IS \n");
+  for (int i = 0 ; i < n ; i++){
+
+    printf("ROW %d: ",i);
+    Node *pointer = sparse_matrix[i];
+
+    do{
+        printf(" %d, %d, %f /// ",pointer->end_node,pointer->start_node, pointer->value);
+        pointer=pointer->next;
+    }while(pointer !=NULL);
+
+    printf("\n");
+
+  }
  
 
 
@@ -226,9 +228,11 @@ int main(int argc, char *argv[]){
       float sum = 0.0;
       Node *currNode = sparse_matrix[i];
 
+      printf("\nMOLTIPLICAZIONE RIGA %d\n", i);
       while (currNode!=NULL){
-
+        
         sum += (old_page_ranks[currNode->start_node] * currNode->value);
+        printf("%0.5f * %0.5f = %0.5f\n", old_page_ranks[currNode->start_node], currNode->value, old_page_ranks[currNode->start_node] * currNode->value);
 
         currNode = currNode->next;
 
@@ -236,9 +240,13 @@ int main(int argc, char *argv[]){
       }
 
       // somma con colonna costante mean_coloumn_weighed
-      //printf("row %d finalsum = %f\n",i,sum);
+      printf("row %d finalsum = %f\n",i,sum);
       page_ranks[i] = sum + mean_coloumn_weighed;
       //printf("row %d page_ranks[i] = %f\n",i,page_ranks[i]);
+
+      
+
+      
 
 
       float diff = page_ranks[i] - old_page_ranks[i];
@@ -260,15 +268,21 @@ int main(int argc, char *argv[]){
     }
     count++;
 
+    printf("\nTHIS IS MY PAGE RANK IN THE FIRST AFTER CALCULUS AT ITERATION %d:\n", count);
+      for (int i = 0; i < n; i++){
+          printf("THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", i , count, page_ranks[i]);
+      }
+
     //printf("score norm is %0.50f\n",score_norm);
+    printf("\nTHIS IS MY SCORE NORM AT ITERATION %d: %0.5f\n", count, score_norm);
 
   } while (score_norm > ERROR);
 
-/*
+
   printf("\n");
   printf("DEBUG: NUMBER OF ITERATION: %d\n", count);
   printf("\n");
-*/
+
 
 /*
   for (int i = 0; i < n; i++){
