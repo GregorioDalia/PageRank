@@ -439,7 +439,7 @@ int main(int argc, char *argv[]){
       if (diff < 0){
         diff = -diff;
       }
-    complete_page_ranks[k]=local_sub_page_ranks[i];
+    
       // sum to the score_norm
       float temp = local_score_norm + diff;
       local_score_norm += diff;
@@ -447,6 +447,8 @@ int main(int argc, char *argv[]){
       // update the round robin index for moving in complete_page_ranks
       k += numtasks;
     }
+
+    complete_page_ranks[k]=local_sub_page_ranks[i];
 
     printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count2);
       for (int i = 0; i < n; i++){
@@ -466,7 +468,6 @@ int main(int argc, char *argv[]){
     //convergiamo per l'ultima volta
     if (rank == MASTER){
       score_norm = 0.0;
-      count2++;
       for (int sender_rank = 1 ; sender_rank < numtasks;sender_rank++){
 
         if(sender_rank < remaining_rows){     
@@ -495,11 +496,6 @@ int main(int argc, char *argv[]){
       for (int i = 0,k = 0 ; i<rows_num;i++){
         complete_page_ranks[k]=local_sub_page_ranks[i];
         k += numtasks;
-      }
-
-      printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL PAGE RANK AFTER CALCULUS:\n", rank);
-      for (int i = 0; i < n; i++){
-          printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i, complete_page_ranks[i]);
       }
 
       printf("\nI'M THE PROCESS %d AND THIS IS MY FINAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, score_norm);
