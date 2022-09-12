@@ -448,14 +448,17 @@ int main(int argc, char *argv[]){
       k += numtasks;
     }
 
-    complete_page_ranks[k]=local_sub_page_ranks[i];
+    for (int i = 0,k=rank; i < rows_num;i++){
+      complete_page_ranks[k]=local_sub_page_ranks[i];
+      k += numtasks;
+    }
 
     printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count2);
-      for (int i = 0; i < n; i++){
-          printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count2, complete_page_ranks[i]);
-      }
+    for (int i = 0; i < n; i++){
+        printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count2, complete_page_ranks[i]);
+    }
 
-      printf("\nI'M THE PROCESS %d AND THIS IS MY LOCAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, count2, local_score_norm);
+    printf("\nI'M THE PROCESS %d AND THIS IS MY LOCAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, count2, local_score_norm);
       
 
     if(local_score_norm <= ERROR){
