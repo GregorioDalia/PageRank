@@ -526,7 +526,7 @@ int main(int argc, char *argv[]){
     
     if(strcmp(argv[1],"DEMO.txt")==0){
           for (int i = 0; i < n; i++){
-                printf("THE PAGE RANK OF NODE %d IS : %0.25f \n", i , complete_page_ranks[i]);
+                printf("THE PAGE RANK OF NODE %d IS : %0.6f \n", i , complete_page_ranks[i]);
         }
     }
     
