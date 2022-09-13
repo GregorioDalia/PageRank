@@ -456,7 +456,7 @@ int main(int argc, char *argv[]){
        for (int i = 0; i < rows_num;i++){
       complete_page_ranks[rank +(i*numtasks)]=local_sub_page_ranks[i];
     }
-    
+
     #pragma omp parallel for reduction (+:local_score_norm)
     for (int i=0;i<rows_num;i++){
       local_score_norm = local_score_norm+diff[i];
@@ -470,7 +470,7 @@ int main(int argc, char *argv[]){
   }
 
 
-    printf("CONVERGO ciclo\n ");
+    //printf("CONVERGO ciclo\n ");
 
 
     //convergiamo per l'ultima volta
