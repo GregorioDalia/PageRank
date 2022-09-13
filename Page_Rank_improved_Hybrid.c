@@ -266,7 +266,6 @@ int main(int argc, char *argv[]){
 
   if(rank==MASTER){
     
-    printf("DEBUG: INIZIO IL PRIMO PRAGMA INIZIALIZZO\n ");
 
     MPItime_start = MPI_Wtime();
   }
@@ -294,7 +293,6 @@ int main(int argc, char *argv[]){
     
   iterate = 1;
   
-    printf("DEBUG: INIZIO IL PRIMO ciclo\n ");
 
 
  while(iterate ){
@@ -415,7 +413,6 @@ int main(int argc, char *argv[]){
     }*/
 
     int count2=0;
-    printf("DEBUG: INIZIO IL SECONDO ciclo\n ");
 
 
     while(iterate ){
@@ -460,6 +457,9 @@ int main(int argc, char *argv[]){
       local_score_norm = local_score_norm+diff[i];
     }
 
+      if(local_score_norm <= ERROR){
+        iterate = 0;
+    }
 
 
   }
