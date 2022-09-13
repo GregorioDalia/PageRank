@@ -268,12 +268,13 @@ int main(int argc, char *argv[]){
  
   teleport_probability = (1 - WEIGHT) / (float)n;
 
+    #pragma omp parallel for num_threads(nt) 
   for (int i = 0; i < n; i++){
-
+    //printf("%d %d ciclo\n",rank , omp_get_num_threads());
     if(i<rows_num){
       local_sub_page_ranks[i] = 1.0 / (float)n;
       
-      pointer = sparse_matrix_local[i];
+      Node *pointer = sparse_matrix_local[i];
 
       // Update the value of the pointer
       while (pointer != NULL){  
@@ -389,6 +390,7 @@ int main(int argc, char *argv[]){
     }
 
   }
+
     /*
   if(rank == MASTER){
     if(strcmp(argv[1],"DEMO.txt")==0){
@@ -408,65 +410,52 @@ int main(int argc, char *argv[]){
     int count2=0;
 
 
-    while ( iterate){
+    while(iterate ){
+    //printf("%d START TO ITERATE \n",rank);
+
+    if(rank==MASTER)count++;
+
     local_score_norm = 0;
     float diff [rows_num];
 
-
-    if(rank==MASTER)count2++;
-    /*
-    printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE BEFORE CALCULUS AT ITERATION %d:\n", rank, count2);
-    for (int i = 0; i < n; i++){
-        printf("IN PROCESS %d THE PAGE RANK OF NODE %d IS : %0.50f \n", rank, i , complete_page_ranks[i]);
-    }
-
-    */
     #pragma omp parallel for num_threads(nt)
     for (int i = 0; i < rows_num;i++){
-      sum = 0.0;
-      currNode = sparse_matrix_local[i];
-      //printf("\nMULTIPLICATION ROW %d AT %d ITERATION (2ND WHILE)\n", i, count2);
+      float sum = 0.0;
+      //int k = rank;
+      Node *currNode = sparse_matrix_local[i];
+
       while (currNode!=NULL){
         sum += (complete_page_ranks[currNode->start_node] * currNode->value);
-        //printf("%0.5f * %0.5f = %0.5f\n", complete_page_ranks[currNode->start_node], currNode->value, complete_page_ranks[currNode->start_node] * currNode->value);
-
         currNode = currNode->next;
       } 
-
-      //printf("row %d finalsum = %f\n",i,sum);
 
       local_sub_page_ranks[i] = sum + teleport_probability;
       
       // take the absolute value of the error
-       diff[i] = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
+      diff[i] = local_sub_page_ranks[i] - complete_page_ranks[rank +(i*numtasks)];
       if (diff[i] < 0){
         diff[i] = -diff [i];
       }
-    
+        
+      // sum to the score_norm
+      //float temp = local_score_norm + diff;
+      //#pragma omp critical
+      //local_score_norm += diff;
 
+     // k +=numtasks;
+
+      // update the round robin index for moving in complete_page_ranks
     }
     
-
-    
-  
-    /*
-    printf("\nI'M THE PROCESS %d AND THIS IS MY PAGE RANK IN THE SECOND WHILE AFTER CALCULUS AT ITERATION %d:\n", rank, count2);
-    for (int i = 0; i < n; i++){
-        printf("IN PROCESS %d THE PAGE RANK OF NODE %d AT ITERATION %d IS : %0.50f \n", rank, i , count2, complete_page_ranks[i]);
-    }
-
-    printf("\nI'M THE PROCESS %d AND THIS IS MY LOCAL SCORE NORM AT ITERATION %d: %0.5f\n", rank, count2, local_score_norm);
-    */ 
-
     #pragma omp parallel for reduction (+:local_score_norm)
     for (int i=0;i<rows_num;i++){
       local_score_norm = local_score_norm+diff[i];
     }
-    if(local_score_norm <= ERROR){
-        iterate = 0;
-    }
 
-    }
+
+
+  }
+
 
 
 
