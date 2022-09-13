@@ -451,6 +451,11 @@ int main(int argc, char *argv[]){
 
       // update the round robin index for moving in complete_page_ranks
     }
+
+        #pragma omp parallel for num_threads(nt)
+       for (int i = 0; i < rows_num;i++){
+      complete_page_ranks[rank +(i*numtasks)]=local_sub_page_ranks[i];
+    }
     
     #pragma omp parallel for reduction (+:local_score_norm)
     for (int i=0;i<rows_num;i++){
