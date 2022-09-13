@@ -262,7 +262,12 @@ int main(int argc, char *argv[]){
             MPI_STATUS_IGNORE);
   }
 
+
+
   if(rank==MASTER){
+    
+    printf("DEBUG: INIZIO IL PRIMO PRAGMA INIZIALIZZO\n ");
+
     MPItime_start = MPI_Wtime();
   }
  
@@ -288,6 +293,8 @@ int main(int argc, char *argv[]){
 
     
   iterate = 1;
+  
+    printf("DEBUG: INIZIO IL PRIMO ciclo\n ");
 
 
  while(iterate ){
@@ -408,6 +415,7 @@ int main(int argc, char *argv[]){
     }*/
 
     int count2=0;
+    printf("DEBUG: INIZIO IL SECONDO ciclo\n ");
 
 
     while(iterate ){
@@ -457,6 +465,7 @@ int main(int argc, char *argv[]){
   }
 
 
+    printf("CONVERGO ciclo\n ");
 
 
     //convergiamo per l'ultima volta
