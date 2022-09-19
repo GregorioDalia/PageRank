@@ -12,7 +12,7 @@ typedef struct Node
 } Node;
 
 #define WEIGHT 0.85     // Real in (0, 1), best at 0.85
-#define ERROR 0.0001   // Real in (0, +inf), best at 0.0001
+#define ERROR 0.000001   // Real in (0, +inf)
 #define MASTER 0        // Rank of the master process
 #define TAG 0           /* MPI message tag parameter */
 
@@ -365,7 +365,7 @@ int main(int argc, char *argv[]){
 
       printf("\nI'M THE PROCESS %d AND THIS IS MY SCORE NORM AT ITERATION %d: %0.5f\n", rank, count, score_norm);
       */
-      if(score_norm <= 0.1)  {
+      if(score_norm <= 0.001)  {
         iterate = 0;
       }
       
