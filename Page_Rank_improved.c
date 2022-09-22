@@ -530,8 +530,8 @@ int main(int argc, char *argv[]){
         }
     }
     
-    printf("%d iterazioni \n ",count);
-    printf("%d seconde iterazioni %d\n",count2);
+    //printf("%d iterazioni \n ",count);
+    //printf("%d seconde iterazioni\n",count2);
     printf ("Tempo di esecuzione (secondi): %f\n", MPItime_end - MPItime_start);
   }
 
